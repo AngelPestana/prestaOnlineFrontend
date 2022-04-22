@@ -1,1 +1,82 @@
-<p>acceso works!</p>
+<app-header></app-header>
+<section class="position-relative h-100 pb-4">
+
+    <!-- Sign in form -->
+    <div class="container d-flex flex-wrap justify-content-center justify-content-xl-start h-100 pt-2 animate__animated animate__bounceInLeft"
+        id="login">
+        <div class="w-100 align-self-end pt-1 pt-md-4 pb-4" style="max-width: 526px;">
+            <h1 class="text-center text-xl-start">Bienvenid@ a la plataforma de PrestaOnline</h1>
+            <p class="text-center text-xl-start pb-3 mb-3">Favor de iniciar sesión</p>
+            <form class="mb-2" novalidate [formGroup]="formulario">
+                <div class="position-relative mb-4">
+                    <label for="email" class="form-label fs-base">Email</label>
+                    <input type="email" id="email" class="form-control form-control-lg" formControlName="email">
+                    <div
+                        *ngIf="formularioControl.email.errors && (formularioControl.email.dirty || formularioControl.email.touched)">
+                        <p class="form-text text-danger"
+                            *ngIf="formularioControl.email.errors.required || formularioControl.email.errors.minlength; else elseBlock">
+                            El email es requerido y no debe tener menos de 11 caracteres</p>
+                        <ng-template #elseBlock>
+                            <p class="form-text text-danger" *ngIf="formularioControl.email.errors.pattern">La dirección
+                                debe ser valida y requiere del "@"</p>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fs-base">Contraseña</label>
+                    <div class="password-toggle">
+                        <input type="password" id="password" class="form-control form-control-lg"
+                            formControlName="password">
+                        <div
+                            *ngIf="formularioControl.password.errors && (formularioControl.password.dirty || formularioControl.password.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.password.errors.required || formularioControl.password.errors.minlength">
+                                La contraseña es requerida y no debe tener menos de 4 caracteres</p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                    (click)="entrar()">Entrar</button>
+            </form>
+        </div>
+        <div class="w-100 align-self-end">
+            <p class="fs-xs text-center text-xl-start pb-2 mb-0">
+                © Reservados todos los derechos.
+                <br>
+                Realizado por Ángel de Jesús Pestaña Sánchez.
+            </p>
+        </div>
+    </div>
+
+    <!-- Background -->
+    <div class="position-absolute top-0 end-0 w-50 h-100 bg-position-center bg-repeat-0 bg-size-cover d-none d-xl-block text-center"
+        style="border-radius: 20px 0px 0px 20px;">
+        <div class="mt-5">
+            <img src="../../../assets/img/logos/PrestaOnline4.png" class="align-middle" width="80%" alt="">
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog text-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ni modos!!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Comunícate con el administrador del sitio jejeje
+                <img src="../../../assets/img/polar/img3.gif" width="50%" height="75%"
+                    alt="../../../assets/img/polar/img3.gif">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<app-footer></app-footer>

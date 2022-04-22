@@ -1,4 +1,9 @@
-a, button, p, h1, h2, h3, h4, h5, h6, input, select, textarea, li{
+a, button, p, h1, h2, h3, h4, h5, h6, input, select, textarea, li, label{
     font-family: 'Lobster', cursive;
+}
+
+.btn.btn-primary {
+    background-color: #F28D91;
+    border-color: #F28D91;
 }
 

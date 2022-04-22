@@ -8,6 +8,7 @@ import { AccesoComponent } from './pages/acceso/acceso.component';
 import { HeaderComponent } from './includes/header/header.component';
 import { FooterComponent } from './includes/footer/footer.component';
 import {NgxTypedJsModule} from 'ngx-typed-js';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,9 @@ import {NgxTypedJsModule} from 'ngx-typed-js';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgxTypedJsModule
+    NgxTypedJsModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
