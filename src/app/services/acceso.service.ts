@@ -1,0 +1,35 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AccesoService {
+
+  url: string = 'http://localhost:8080/auth/';
+
+  constructor(private http: HttpClient) { }
+
+  postLogin(formData: any): Observable<any> {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<any>(this.url + 'login', formData, httpOptions);
+  }
+
+  postLogout() {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        //Siempre especificar el tipo de autorizacion
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    //segundo parametro corresponde al data que enviamos, en este caso es de cerrar sesion por lo mismo no mandamos nada y en el tercer 
+    //parametro mandamos el httpOptions que es el header que se usa para enviar el token
+    return this.http.post(this.url + 'logout', '', httpOptions);
+  }
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AccesoService } from 'src/app/services/acceso.service';
 import Swal from 'sweetalert2';
 
 
@@ -12,7 +13,7 @@ import Swal from 'sweetalert2';
 export class AccesoComponent implements OnInit {
   formulario: any;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private as: AccesoService) { }
 
   ngOnInit(): void {
     this.redireccionar();
@@ -42,10 +43,17 @@ export class AccesoComponent implements OnInit {
   }
 
   entrar(): void {
-    /*
     console.log('entrar');
     let email = this.formulario.value.email;
     let password = this.formulario.value.password;
+    let formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    this.as.postLogin(formData).subscribe((res: any) => {
+      console.log(res);
+    });
+    //console.log(email+' '+password);
+    /*
     if (email === this.email1 && password === this.contraseña1) {
       this.router.navigate(['/']);
       this.acceder();
