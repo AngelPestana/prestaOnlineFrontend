@@ -22,6 +22,16 @@ export class HeaderComponent implements OnInit {
     if (localStorage.getItem('token') != null) {
       this.nombre = localStorage.getItem('nombre');
       this.id_rol = localStorage.getItem('id_rol');
+      this.checarExpiracion();
+    }
+  }
+
+  checarExpiracion() {
+    let date = new Date();
+    let time = date.getTime();
+    let timeExpiradoInt = parseInt(localStorage.getItem('tiempoExpirado'));
+    if (time >= timeExpiradoInt){
+      this.salirPorSesionExpirada();
     }
   }
 
@@ -31,6 +41,23 @@ export class HeaderComponent implements OnInit {
     this.id_rol = '';
     this.router.navigate(['/acceso']);
     this.mensajeCerroSesion();
+  }
+
+  salirPorSesionExpirada() {
+    localStorage.clear();
+    this.nombre = '';
+    this.id_rol = '';
+    this.router.navigate(['/acceso']);
+    this.mensajeCerroSesionPorExpiracion();
+  }
+
+  mensajeCerroSesionPorExpiracion() {
+    Swal.fire({
+      title: 'Sesión cerrada por expiración de la sesión!',
+      text: 'si gusta seguir, favor de iniciar sesión nuevamente',
+      icon: 'success',
+      confirmButtonText: 'Aceptar'
+    });
   }
 
   mensajeCerroSesion() {

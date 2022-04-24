@@ -2,7 +2,7 @@ a, button, p, h1, h2, h3, h4, h5, h6, input, select, textarea, li, label, th, td
     font-family: 'Lobster', cursive;
 }
 
-.dataTables_info{
+.dataTables_info, .swal2-html-container{
     font-family: 'Lobster', cursive;
 }
 

@@ -69,6 +69,11 @@ export class AccesoComponent implements OnInit {
       localStorage.setItem('token', res.Token);
       localStorage.setItem('nombre', res.user.nombre);
       localStorage.setItem('id_rol', res.user.id_rol);
+      let date = new Date();
+      let time = date.getTime();
+      let time2 = time + ((12 * 60 * 60) - 10);
+      localStorage.setItem('tiempoExpirado', time2.toString());
+      console.log(time2);
       this.cerrarLoading();
       this.mensajeInicioSesion();
       this.router.navigate(['/home']);

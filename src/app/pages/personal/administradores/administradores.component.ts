@@ -41,7 +41,17 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
       console.log(res);
       this.dtTrigger.next(0);
       this.cerrarLoading();
-    });
+    }, (error => {
+      console.log(error);
+      this.cerrarLoading();
+    }));
+  }
+
+  mensajeErrorIniciarSesion(mensaje: string) {
+    Swal.fire({
+      icon: 'error',
+      title: mensaje
+    })
   }
 
   espere () {
