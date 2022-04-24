@@ -65,15 +65,15 @@ export class AccesoComponent implements OnInit {
     login.email = email;
     login.contraseña = password;
     this.as.postLogin(login).subscribe((res: any) => {
-      console.log(res);
+      //console.log(res);
       localStorage.setItem('token', res.Token);
       localStorage.setItem('nombre', res.user.nombre);
       localStorage.setItem('id_rol', res.user.id_rol);
       let date = new Date();
       let time = date.getTime();
-      let time2 = time + ((12 * 60 * 60) - 10);
+      let time2 = time + (((12 * 60 * 60)*1000) - 10000);
       localStorage.setItem('tiempoExpirado', time2.toString());
-      console.log(time2);
+      //console.log(time2);
       this.cerrarLoading();
       this.mensajeInicioSesion();
       this.router.navigate(['/home']);

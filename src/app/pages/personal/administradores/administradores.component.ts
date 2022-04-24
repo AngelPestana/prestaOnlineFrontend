@@ -38,11 +38,11 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   obtenerAdministradores() {
     this.as.getAdministradores().subscribe((res: any) => {
       this.administradores = res;
-      console.log(res);
+      //console.log(res);
       this.dtTrigger.next(0);
       this.cerrarLoading();
     }, (error => {
-      console.log(error);
+      //console.log(error);
       this.cerrarLoading();
     }));
   }
