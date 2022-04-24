@@ -11,17 +11,17 @@
 
         <div class="collapse navbar-collapse" id="navbarsExample03">
             <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" *ngIf="id_rol == '1' || id_rol == '2' || id_rol == '3'">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="dropdown03" data-bs-toggle="dropdown"
                         aria-expanded="false">Personal</a>
                     <ul class="dropdown-menu animate__animated animate__bounceIn" aria-labelledby="dropdown03">
-                        <li><a class="dropdown-item" href="#">Administradores</a></li>
-                        <li><a class="dropdown-item" href="#">Supervisores</a></li>
-                        <li><a class="dropdown-item" href="#">Promotores</a></li>
+                        <li *ngIf="id_rol == '1'"><a class="dropdown-item" href="#">Administradores</a></li>
+                        <li *ngIf="id_rol == '1'"><a class="dropdown-item" href="#">Supervisores</a></li>
+                        <li *ngIf="id_rol == '1' || id_rol == '2'"><a class="dropdown-item" href="#">Promotores</a></li>
                         <li><a class="dropdown-item" href="#">Clientes</a></li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" *ngIf="id_rol == '1' || id_rol == '2' || id_rol == '3'">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="dropdown03" data-bs-toggle="dropdown"
                         aria-expanded="false">Gestión</a>
                     <ul class="dropdown-menu animate__animated animate__bounceIn" aria-labelledby="dropdown03">
@@ -29,25 +29,25 @@
                         <li><a class="dropdown-item" href="#">Abonos</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="id_rol == '4'">
                     <a class="nav-link text-white" href="#">Mis Prestamos</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="id_rol == '4'">
                     <a class="nav-link text-white disabled">Mis Abonos</a>
                 </li>
             </ul>
             <ul class="navbar-nav justify-content-end">
-                <li class="nav-item">
-                    <a class="nav-link text-white">¡Hola: Angel Pestaña!</a>
+                <li class="nav-item" *ngIf="nombre != ''">
+                    <a class="nav-link text-white">¡Hola: {{nombre}}!</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="id_rol == ''">
                     <a class="nav-link text-white" routerLink="/acceso">Acceder</a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" *ngIf="id_rol != ''">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="dropdown03" data-bs-toggle="dropdown"
                         aria-expanded="false">Salir</a>
                     <ul class="dropdown-menu animate__animated animate__bounceIn" aria-labelledby="dropdown03">
-                        <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
+                        <li><a class="dropdown-item" (click)="salir()">Cerrar Sesión</a></li>
                     </ul>
                 </li>
             </ul>

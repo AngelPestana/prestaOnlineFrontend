@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Login } from 'src/app/models/Login';
 import { AccesoService } from 'src/app/services/acceso.service';
 import Swal from 'sweetalert2';
 
@@ -12,6 +13,7 @@ import Swal from 'sweetalert2';
 })
 export class AccesoComponent implements OnInit {
   formulario: any;
+  mensajeEspere: any;
 
   constructor(private router: Router, private as: AccesoService) { }
 
@@ -22,8 +24,8 @@ export class AccesoComponent implements OnInit {
 
   redireccionar(): void {
     //console.log(localStorage.getItem('accedio'));
-    if (localStorage.getItem('accedio')) {
-      this.router.navigate(['/inicio']);
+    if (localStorage.getItem('token')) {
+      this.router.navigate(['/home']);
     }
   }
 
@@ -42,58 +44,60 @@ export class AccesoComponent implements OnInit {
     //console.log(this.formulario);
   }
 
+  espere () {
+    this.mensajeEspere = Swal.fire({
+      title: 'Por favor espere...',
+      imageUrl: '../../../assets/img/gif/loading.gif',
+      imageWidth: 100,
+      imageHeight: 100,
+      imageAlt: 'Custom image',
+      showConfirmButton: false,
+      allowOutsideClick: false
+    });
+  }
+
   entrar(): void {
-    console.log('entrar');
+    //console.log('entrar');
+    this.espere();
     let email = this.formulario.value.email;
     let password = this.formulario.value.password;
-    let formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
-    this.as.postLogin(formData).subscribe((res: any) => {
+    let login = new Login();
+    login.email = email;
+    login.contraseña = password;
+    this.as.postLogin(login).subscribe((res: any) => {
       console.log(res);
+      localStorage.setItem('token', res.Token);
+      localStorage.setItem('nombre', res.user.nombre);
+      localStorage.setItem('id_rol', res.user.id_rol);
+      this.cerrarLoading();
+      this.mensajeInicioSesion();
+      this.router.navigate(['/home']);
+    }, (error: any) => {
+      console.log(error.error.messages.error);
+      this.cerrarLoading();
+      this.mensajeErrorIniciarSesion(error.error.messages.error);
     });
-    //console.log(email+' '+password);
-    /*
-    if (email === this.email1 && password === this.contraseña1) {
-      this.router.navigate(['/']);
-      this.acceder();
-      localStorage.setItem('accedio', 'true');
-    } else if (email === this.email2 && password === this.contraseña2) {
-      this.router.navigate(['/']);
-      this.acceder();
-      localStorage.setItem('accedio', 'true');
-    } else {
-      this.formulario.reset();
-      this.mensajeError = "Usuario o contraseña incorrectos";
-      //alert(this.mensajeError);
-      this.mensajePersonalizado();
-    }
-    //console.log(email);
-    //localStorage.setItem('accedio', 'true');
-    */
   }
 
-  acceder(): void {
+  mensajeInicioSesion() {
     Swal.fire({
-      title: '<strong>¡Bienvenid@!</strong>',
       icon: 'success',
-      imageUrl: '../../../assets/img/polar/img4.gif',
-      imageWidth: 200,
-      imageHeight: 200,
-      imageAlt: 'Custom image'
+      title: '¡Bienvenid@ ' + localStorage.getItem('nombre') + ' a PrestaOnline!',
     })
   }
 
-  mensajePersonalizado() {
+  mensajeErrorIniciarSesion(mensaje: string) {
     Swal.fire({
-      title: '<strong>Datos incorrectos!!</strong>',
       icon: 'error',
-      text: 'Verifique sus datos!!',
-      imageUrl: '../../../assets/img/polar/img3.gif',
-      imageWidth: 200,
-      imageHeight: 200,
-      imageAlt: 'Custom image'
+      title: mensaje
     })
+  }
+
+  cerrarLoading() {
+    setTimeout(() => {//para detener el loading
+      //console.log(this.loading);
+      this.mensajeEspere.close();
+    }, 500);
   }
 
   get formularioControl() {//NO borrar

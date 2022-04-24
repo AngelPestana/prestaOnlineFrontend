@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Login } from '../models/Login';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +12,13 @@ export class AccesoService {
 
   constructor(private http: HttpClient) { }
 
-  postLogin(formData: any): Observable<any> {
+  postLogin(login: Login): Observable<Login> {
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
-    return this.http.post<any>(this.url + 'login', formData, httpOptions);
+    return this.http.post<Login>(this.url + 'login', login, httpOptions);
   }
 
   postLogout() {
