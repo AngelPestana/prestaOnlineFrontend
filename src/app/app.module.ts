@@ -10,6 +10,8 @@ import { HeaderComponent } from './includes/header/header.component';
 import { FooterComponent } from './includes/footer/footer.component';
 import {NgxTypedJsModule} from 'ngx-typed-js';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AdministradoresComponent } from './pages/personal/administradores/administradores.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     AccesoComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    AdministradoresComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgxTypedJsModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    DataTablesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,8 @@
-a, button, p, h1, h2, h3, h4, h5, h6, input, select, textarea, li, label{
+a, button, p, h1, h2, h3, h4, h5, h6, input, select, textarea, li, label, th, td{
+    font-family: 'Lobster', cursive;
+}
+
+.dataTables_info{
     font-family: 'Lobster', cursive;
 }
 

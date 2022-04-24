@@ -73,7 +73,7 @@ export class AccesoComponent implements OnInit {
       this.mensajeInicioSesion();
       this.router.navigate(['/home']);
     }, (error: any) => {
-      console.log(error.error.messages.error);
+      //console.log(error.error.messages.error);
       this.cerrarLoading();
       this.mensajeErrorIniciarSesion(error.error.messages.error);
     });

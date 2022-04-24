@@ -15,7 +15,7 @@
                     <a class="nav-link dropdown-toggle text-white" href="#" id="dropdown03" data-bs-toggle="dropdown"
                         aria-expanded="false">Personal</a>
                     <ul class="dropdown-menu animate__animated animate__bounceIn" aria-labelledby="dropdown03">
-                        <li *ngIf="id_rol == '1'"><a class="dropdown-item" href="#">Administradores</a></li>
+                        <li *ngIf="id_rol == '1'"><a class="dropdown-item" routerLink="/administradores">Administradores</a></li>
                         <li *ngIf="id_rol == '1'"><a class="dropdown-item" href="#">Supervisores</a></li>
                         <li *ngIf="id_rol == '1' || id_rol == '2'"><a class="dropdown-item" href="#">Promotores</a></li>
                         <li><a class="dropdown-item" href="#">Clientes</a></li>
