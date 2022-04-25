@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AccesoComponent } from './pages/acceso/acceso.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AdministradoresComponent } from './pages/personal/administradores/administradores.component';
+import { SupervisoresComponent } from './pages/personal/supervisores/supervisores.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: 'administradores',
     component: AdministradoresComponent
+  },
+  {
+    path: 'supervisores',
+    component: SupervisoresComponent
   },
 ];
 

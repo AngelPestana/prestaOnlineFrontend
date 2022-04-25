@@ -2,31 +2,32 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { Administrador } from 'src/app/models/Administrador';
-import { AdministradorService } from 'src/app/services/administrador.service';
+import { Supervisor } from 'src/app/models/Supervisor';
+import { SupervisorService } from 'src/app/services/supervisor.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-administradores',
-  templateUrl: './administradores.component.html',
-  styleUrls: ['./administradores.component.css']
+  selector: 'app-supervisores',
+  templateUrl: './supervisores.component.html',
+  styleUrls: ['./supervisores.component.css']
 })
-export class AdministradoresComponent implements OnInit, OnDestroy {
+export class SupervisoresComponent implements OnInit {
+
   formulario: any;
   dtOptions: DataTables.Settings = {};
-  administradores: Administrador[] = [];
-  administrador: Administrador[] = [];
+  supervisores: Supervisor[] = [];
+  supervisor: Supervisor[] = [];
   dtTrigger: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   estaEnGestion: boolean = false;
-  administradoresGetSubscription: Subscription;
-  administradorGetSubscription: Subscription;
-  administradorPostSubscription: Subscription;
-  administradorPutSubscription: Subscription;
-  administradorDeteleSubscription: Subscription;
+  supervisoresGetSubscription: Subscription;
+  supervisorGetSubscription: Subscription;
+  supervisorPostSubscription: Subscription;
+  supervisorPutSubscription: Subscription;
+  supervisorDeteleSubscription: Subscription;
   //Nota importante, mandamos los datos por objeto, mientras la lectura de informacion sera manipulado por arreglos
 
-  constructor(private as: AdministradorService, private router: Router) { }
+  constructor(private ss: SupervisorService, private router: Router) { }
 
   ngOnInit(): void {
     this.formularioReactivo();//El formulario quiero a fuerzas que se inicie, debido al formulario establecido en la plantilla,
@@ -48,7 +49,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json'
       }
     };
-    this.obtenerAdministradores();
+    this.obtenerSupervisores();
   }
 
   formularioReactivo(): void {
@@ -79,6 +80,11 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(10),
         Validators.pattern("[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}")
+      ]),
+      direccion: new FormControl('', [
+        Validators.required,
+        Validators.minLength(15),
+        Validators.pattern("[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}")
       ])
     });
     //console.log(this.formulario);
@@ -97,33 +103,33 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-    this.administradoresGetSubscription.unsubscribe();
-    if (this.administradorGetSubscription != null || this.administradorGetSubscription != undefined) {
-      this.administradorGetSubscription.unsubscribe();
+    this.supervisoresGetSubscription.unsubscribe();
+    if (this.supervisorGetSubscription != null || this.supervisorGetSubscription != undefined) {
+      this.supervisorGetSubscription.unsubscribe();
       //console.log('se elimino el get edit')
     }
 
-    if (this.administradorPostSubscription != null || this.administradorPostSubscription != undefined) {
-      this.administradorPostSubscription.unsubscribe();
+    if (this.supervisorPostSubscription != null || this.supervisorPostSubscription != undefined) {
+      this.supervisorPostSubscription.unsubscribe();
       //console.log('se elimino el post')
     }
 
-    if (this.administradorPutSubscription != null || this.administradorPutSubscription != undefined) {
-      this.administradorPutSubscription.unsubscribe();
+    if (this.supervisorPutSubscription != null || this.supervisorPutSubscription != undefined) {
+      this.supervisorPutSubscription.unsubscribe();
       //console.log('se elimino el put')
     }
 
-    if (this.administradorDeteleSubscription != null || this.administradorDeteleSubscription != undefined) {
-      this.administradorDeteleSubscription.unsubscribe();
+    if (this.supervisorDeteleSubscription != null || this.supervisorDeteleSubscription != undefined) {
+      this.supervisorDeteleSubscription.unsubscribe();
       //console.log('se elimino el delete')
     }
     //console.log('ngOnDestroy iniciado');
   }
 
-  obtenerAdministradores() {
+  obtenerSupervisores() {
     this.espere();
-    this.administradoresGetSubscription = this.as.getAdministradores().subscribe((res: any) => {
-      this.administradores = res;
+    this.supervisoresGetSubscription = this.ss.getSupervisores().subscribe((res: any) => {
+      this.supervisores = res;
       //console.log(res);
       this.dtTrigger.next(0);
       this.cerrarLoading();
@@ -155,22 +161,22 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   editarAdmin() {
     this.espere();
     //console.log('con que quieres editar verdad prro!!');
-    let administrador = new Administrador();//Creamos una variable local de tipo administrador, no usamos el this.administrador
-    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.administrador, es la que se mostro antes de modificar
-    administrador.nombre = this.formulario.value.nombre;
-    administrador.apellidos = this.formulario.value.apellidos;
-    if (this.administrador['email'] != this.formulario.value.email) {
-      administrador.email = this.formulario.value.email;
+    let supervisor = new Supervisor();//Creamos una variable local de tipo supervisor, no usamos el this.supervisor
+    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.supervisor, es la que se mostro antes de modificar
+    supervisor.nombre = this.formulario.value.nombre;
+    supervisor.apellidos = this.formulario.value.apellidos;
+    if (this.supervisor['email'] != this.formulario.value.email) {
+      supervisor.email = this.formulario.value.email;
     }
-    administrador.contraseña = this.formulario.value.password;
-    administrador.genero = this.formulario.value.genero;
-    administrador.telefono = this.formulario.value.telefono;
-    //administrador['id'] = this.administrador['id'];
-    //console.log(administrador);
-    this.administradorPutSubscription = this.as.putAdministrador(administrador, this.administrador['id']).subscribe((res: any) => {
+    supervisor.contraseña = this.formulario.value.password;
+    supervisor.genero = this.formulario.value.genero;
+    supervisor.telefono = this.formulario.value.telefono;
+    //supervisor['id'] = this.supervisor['id'];
+    //console.log(supervisor);
+    this.supervisorPutSubscription = this.ss.putSupervisor(supervisor, this.supervisor['id']).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
-      let mensaje = 'Se edito el administrador con exito!!';
+      let mensaje = 'Se edito el supervisor con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -184,9 +190,9 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   eliminarAdmin() {
     this.espere();
     //console.log('con que quieres eliminar verdad prro!!');
-    this.administradorDeteleSubscription = this.as.deleteAdministrador(this.administrador['id']).subscribe((res: any) => {
+    this.supervisorDeteleSubscription = this.ss.deleteSupervisor(this.supervisor['id']).subscribe((res: any) => {
       this.cerrarLoading();
-      let mensaje = 'Se eliminó el administrador con exito!!';
+      let mensaje = 'Se eliminó el supervisor con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -200,18 +206,18 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   agregarAdmin() {
     this.espere();
     //console.log('con que quieres agregar verdad prro!!');
-    let administrador = new Administrador();
-    administrador.nombre = this.formulario.value.nombre;
-    administrador.apellidos = this.formulario.value.apellidos;
-    administrador.email = this.formulario.value.email;
-    administrador.contraseña = this.formulario.value.password;
-    administrador.genero = this.formulario.value.genero;
-    administrador.telefono = this.formulario.value.telefono;
-    administrador.id_rol = 1;
-    this.administradorPostSubscription = this.as.postAdministrador(administrador).subscribe((res: any) => {
+    let supervisor = new Supervisor();
+    supervisor.nombre = this.formulario.value.nombre;
+    supervisor.apellidos = this.formulario.value.apellidos;
+    supervisor.email = this.formulario.value.email;
+    supervisor.contraseña = this.formulario.value.password;
+    supervisor.genero = this.formulario.value.genero;
+    supervisor.telefono = this.formulario.value.telefono;
+    supervisor.id_rol = 1;
+    this.supervisorPostSubscription = this.ss.postSupervisor(supervisor).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
-      let mensaje = 'Se agregó el administrador con exito!!';
+      let mensaje = 'Se agregó el supervisor con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -243,25 +249,25 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     })
   }
 
-  entroEnGestion(id_administrador: string) {
+  entroEnGestion(id_supervisor: string) {
     this.estaEnGestion = true;
     this.formulario.reset();//vaciamos el formulario
     this.espere();
-    this.administradorGetSubscription = this.as.getAdministrador(id_administrador).subscribe((res: any) => {
+    this.supervisorGetSubscription = this.ss.getSupervisor(id_supervisor).subscribe((res: any) => {
       //dentro del subscribe estaran los datos consultados de la api, fuera de este no tendras nada
-      this.administrador = res;
-      //console.log(this.administrador);
+      this.supervisor = res;
+      //console.log(this.supervisor);
       this.presentandoDatos();
     });
   }
 
   presentandoDatos() {
     this.formulario.patchValue({
-      nombre: this.administrador['nombre'],
-      apellidos: this.administrador['apellidos'],
-      email: this.administrador['email'],
-      genero: this.administrador['genero'],
-      telefono: this.administrador['telefono']
+      nombre: this.supervisor['nombre'],
+      apellidos: this.supervisor['apellidos'],
+      email: this.supervisor['email'],
+      genero: this.supervisor['genero'],
+      telefono: this.supervisor['telefono']
     });
     this.cerrarLoading();
   }
@@ -274,4 +280,5 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   get formularioControl() {//NO borrar
     return this.formulario.controls;
   }
+
 }

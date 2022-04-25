@@ -12,6 +12,7 @@ import {NgxTypedJsModule} from 'ngx-typed-js';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdministradoresComponent } from './pages/personal/administradores/administradores.component';
 import { DataTablesModule } from 'angular-datatables';
+import { SupervisoresComponent } from './pages/personal/supervisores/supervisores.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { DataTablesModule } from 'angular-datatables';
     AccesoComponent,
     HeaderComponent,
     FooterComponent,
-    AdministradoresComponent
+    AdministradoresComponent,
+    SupervisoresComponent
   ],
   imports: [
     BrowserModule,
