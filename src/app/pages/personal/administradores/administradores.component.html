@@ -7,7 +7,8 @@
             <p class="card-text">
                 Aquí puede consultar, agregar, editar y eliminar a los administradores.
             </p>
-            <a href="#" class="btn btn-primary">Agregar</a>
+            <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop" (click)="entroEnAgregar()">Agregar</a>
         </div>
     </div>
 </div>
@@ -38,7 +39,7 @@
                     <td>{{ administrador.created_at }}</td>
                     <td>
                         <a href="" class="btn btn-primary text-white" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop">
+                            data-bs-target="#staticBackdrop" (click)="entroEnGestion(administrador.id)">
                             <i class="bi bi-pencil-square"></i>
                             Gestión</a>
                     </td>
@@ -54,17 +55,100 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Gestión Administrador</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == true">Gestión Administrador</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == false">Agregar Administrador</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+                <form class="mb-2" novalidate [formGroup]="formulario">
+                    <div class="position-relative mb-4">
+                        <label for="nombre" class="form-label fs-base">Nombre</label>
+                        <input type="text" id="nombre" class="form-control form-control-lg" formControlName="nombre">
+                        <div
+                            *ngIf="formularioControl.nombre.errors && (formularioControl.nombre.dirty || formularioControl.nombre.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.nombre.errors.required || formularioControl.nombre.errors.minlength">
+                                El nombre es requerido y no debe tener menos de 11 caracteres</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="apellidos" class="form-label fs-base">Apellidos</label>
+                        <input type="text" id="apellidos" class="form-control form-control-lg" formControlName="apellidos">
+                        <div
+                            *ngIf="formularioControl.apellidos.errors && (formularioControl.apellidos.dirty || formularioControl.apellidos.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.apellidos.errors.required || formularioControl.apellidos.errors.minlength">
+                                Los apellidos son requeridos y no debe tener menos de 11 caracteres</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="apellidos" class="form-label fs-base">Genero</label>
+                        <select class="form-select" id="validationTooltip04" formControlName="genero">
+                            <option selected disabled>Seleccione...</option>
+                            <option value="H">Hombre</option>
+                            <option value="M">Mujer</option>
+                        </select>
+                        <div
+                            *ngIf="formularioControl.genero.errors && (formularioControl.genero.dirty || formularioControl.genero.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.genero.errors.required">
+                                El genero es requerido</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="telefono" class="form-label fs-base">Telefono</label>
+                        <input type="text" id="telefono" class="form-control form-control-lg" formControlName="telefono">
+                        <div
+                            *ngIf="formularioControl.telefono.errors && (formularioControl.telefono.dirty || formularioControl.telefono.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.telefono.errors.required || formularioControl.telefono.errors.minlength">
+                                El telefono es requerido y no debe tener menos de 10 caracteres</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label fs-base">Email</label>
+                        <input type="email" id="email" class="form-control form-control-lg" formControlName="email">
+                        <div
+                            *ngIf="formularioControl.email.errors && (formularioControl.email.dirty || formularioControl.email.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.email.errors.required || formularioControl.email.errors.minlength; else elseBlock">
+                                El email es requerido y no debe tener menos de 11 caracteres</p>
+                            <ng-template #elseBlock>
+                                <p class="form-text text-danger" *ngIf="formularioControl.email.errors.pattern">La dirección
+                                    debe ser valida y requiere del "@"</p>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fs-base">Contraseña</label>
+                        <div class="password-toggle">
+                            <input type="password" id="password" class="form-control form-control-lg"
+                                formControlName="password">
+                            <div
+                                *ngIf="formularioControl.password.errors && (formularioControl.password.dirty || formularioControl.password.touched)">
+                                <p class="form-text text-danger"
+                                    *ngIf="formularioControl.password.errors.required || formularioControl.password.errors.minlength">
+                                    La contraseña es requerida y no debe tener menos de 4 caracteres</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                        (click)="agregarAdmin()" *ngIf="estaEnGestion == false" data-bs-dismiss="modal">Agregar</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                        (click)="editarAdmin()" *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Editar</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3"
+                        (click)="eliminarAdmin()" *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Eliminar</button>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Close
+                    Cancelar
                 </button>
-                <button type="button" class="btn btn-primary">Understood</button>
             </div>
         </div>
     </div>

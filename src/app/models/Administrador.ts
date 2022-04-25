@@ -7,6 +7,6 @@ export class Administrador {
     telefono: string| undefined;
     email: string| undefined;
     contraseña: string| undefined;
-    id_rol: string| undefined;
+    id_rol: number| undefined;
     created_at: string| undefined;
 }
