@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Administrador } from 'src/app/models/Administrador';
 import { AdministradorService } from 'src/app/services/administrador.service';
 import Swal from 'sweetalert2';
@@ -19,6 +19,11 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   estaEnGestion: boolean = false;
+  administradoresGetSubscription: Subscription;
+  administradorGetSubscription: Subscription;
+  administradorPostSubscription: Subscription;
+  administradorPutSubscription: Subscription;
+  administradorDeteleSubscription: Subscription;
   //Nota importante, mandamos los datos por objeto, mientras la lectura de informacion sera manipulado por arreglos
 
   constructor(private as: AdministradorService, private router: Router) { }
@@ -88,11 +93,32 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+    this.administradoresGetSubscription.unsubscribe();
+    if (this.administradorGetSubscription != null || this.administradorGetSubscription != undefined) {
+      this.administradorGetSubscription.unsubscribe();
+      //console.log('se elimino el get edit')
+    }
+
+    if (this.administradorPostSubscription != null || this.administradorPostSubscription != undefined) {
+      this.administradorPostSubscription.unsubscribe();
+      //console.log('se elimino el post')
+    }
+
+    if (this.administradorPutSubscription != null || this.administradorPutSubscription != undefined) {
+      this.administradorPutSubscription.unsubscribe();
+      //console.log('se elimino el put')
+    }
+
+    if (this.administradorDeteleSubscription != null || this.administradorDeteleSubscription != undefined) {
+      this.administradorDeteleSubscription.unsubscribe();
+      //console.log('se elimino el delete')
+    }
+    //console.log('ngOnDestroy iniciado');
   }
 
   obtenerAdministradores() {
     this.espere();
-    this.as.getAdministradores().subscribe((res: any) => {
+    this.administradoresGetSubscription = this.as.getAdministradores().subscribe((res: any) => {
       this.administradores = res;
       //console.log(res);
       this.dtTrigger.next(0);
@@ -101,13 +127,6 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
       //console.log(error);
       this.cerrarLoading();
     }));
-  }
-
-  mensajeErrorIniciarSesion(mensaje: string) {
-    Swal.fire({
-      icon: 'error',
-      title: mensaje
-    })
   }
 
   espere() {
@@ -136,13 +155,15 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.administrador, es la que se mostro antes de modificar
     administrador.nombre = this.formulario.value.nombre;
     administrador.apellidos = this.formulario.value.apellidos;
-    administrador.email = this.formulario.value.email;
+    if (this.administrador['email'] != this.formulario.value.email) {
+      administrador.email = this.formulario.value.email;
+    }
     administrador.contraseña = this.formulario.value.password;
     administrador.genero = this.formulario.value.genero;
     administrador.telefono = this.formulario.value.telefono;
     //administrador['id'] = this.administrador['id'];
     //console.log(administrador);
-    this.as.putAdministrador(administrador, this.administrador['id']).subscribe((res: any) => {
+    this.administradorPutSubscription = this.as.putAdministrador(administrador, this.administrador['id']).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
       let mensaje = 'Se edito el administrador con exito!!';
@@ -159,7 +180,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   eliminarAdmin() {
     this.espere();
     //console.log('con que quieres eliminar verdad prro!!');
-    this.as.deleteAdministrador(this.administrador['id']).subscribe((res: any) => {
+    this.administradorDeteleSubscription = this.as.deleteAdministrador(this.administrador['id']).subscribe((res: any) => {
       this.cerrarLoading();
       let mensaje = 'Se eliminó el administrador con exito!!';
       this.mensajeExito(mensaje);
@@ -183,7 +204,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     administrador.genero = this.formulario.value.genero;
     administrador.telefono = this.formulario.value.telefono;
     administrador.id_rol = 1;
-    this.as.postAdministrador(administrador).subscribe((res: any) => {
+    this.administradorPostSubscription = this.as.postAdministrador(administrador).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
       let mensaje = 'Se agregó el administrador con exito!!';
@@ -222,7 +243,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     this.estaEnGestion = true;
     this.formulario.reset();//vaciamos el formulario
     this.espere();
-    this.as.getAdministrador(id_administrador).subscribe((res: any) => {
+    this.administradorGetSubscription = this.as.getAdministrador(id_administrador).subscribe((res: any) => {
       //dentro del subscribe estaran los datos consultados de la api, fuera de este no tendras nada
       this.administrador = res;
       //console.log(this.administrador);
