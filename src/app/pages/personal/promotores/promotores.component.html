@@ -3,9 +3,9 @@
 <div class="container mt-3 mb-3">
     <div class="card sin-borde">
         <div class="card-body">
-            <h5 class="card-title">Control Supervisores</h5>
+            <h5 class="card-title">Control Promotores</h5>
             <p class="card-text">
-                Aquí puede consultar, agregar, editar y eliminar a los supervisores.
+                Aquí puede consultar, agregar, editar y eliminar a los promotores.
             </p>
             <a href="#" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#staticBackdrop" (click)="entroEnAgregar()">Agregar</a>
@@ -30,18 +30,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let supervisor of supervisores">
-                    <td>{{ supervisor.id }}</td>
-                    <td>{{ supervisor.nombre }}</td>
-                    <td>{{ supervisor.apellidos }}</td>
-                    <td>{{ supervisor.genero === "H" ? "Hombre" : "Mujer" }}</td>
-                    <td>{{ supervisor.telefono }}</td>
-                    <td>{{ supervisor.email }}</td>
-                    <td>{{ supervisor.direccion }}</td>
-                    <td>{{ supervisor.created_at }}</td>
+                <tr *ngFor="let promotor of promotores">
+                    <td>{{ promotor.id }}</td>
+                    <td>{{ promotor.nombre }}</td>
+                    <td>{{ promotor.apellidos }}</td>
+                    <td>{{ promotor.genero === "H" ? "Hombre" : "Mujer" }}</td>
+                    <td>{{ promotor.telefono }}</td>
+                    <td>{{ promotor.email }}</td>
+                    <td>{{ promotor.direccion }}</td>
+                    <td>{{ promotor.created_at }}</td>
                     <td>
                         <a href="" class="btn btn-primary text-white" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" (click)="entroEnGestion(supervisor.id)">
+                            data-bs-target="#staticBackdrop" (click)="entroEnGestion(promotor.id)">
                             <i class="bi bi-pencil-square"></i>
                             Gestión</a>
                     </td>
@@ -57,8 +57,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == true">Gestión Supervisor</h5>
-                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == false">Agregar Supervisor</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == true">Gestión Promotor</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == false">Agregar Promotor</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

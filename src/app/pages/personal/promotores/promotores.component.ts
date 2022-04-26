@@ -2,32 +2,32 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { Supervisor } from 'src/app/models/Supervisor';
-import { SupervisorService } from 'src/app/services/supervisor.service';
+import { Promotor } from 'src/app/models/Promotor';
+import { PromotorService } from 'src/app/services/promotor.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-supervisores',
-  templateUrl: './supervisores.component.html',
-  styleUrls: ['./supervisores.component.css']
+  selector: 'app-promotores',
+  templateUrl: './promotores.component.html',
+  styleUrls: ['./promotores.component.css']
 })
-export class SupervisoresComponent implements OnInit {
+export class PromotoresComponent implements OnInit {
 
   formulario: any;
   dtOptions: DataTables.Settings = {};
-  supervisores: Supervisor[] = [];
-  supervisor: Supervisor[] = [];
+  promotores: Promotor[] = [];
+  promotor: Promotor[] = [];
   dtTrigger: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   estaEnGestion: boolean = false;
-  supervisoresGetSubscription: Subscription;
-  supervisorGetSubscription: Subscription;
-  supervisorPostSubscription: Subscription;
-  supervisorPutSubscription: Subscription;
-  supervisorDeteleSubscription: Subscription;
+  promotoresGetSubscription: Subscription;
+  promotorGetSubscription: Subscription;
+  promotorPostSubscription: Subscription;
+  promotorPutSubscription: Subscription;
+  promotorDeteleSubscription: Subscription;
   //Nota importante, mandamos los datos por objeto, mientras la lectura de informacion sera manipulado por arreglos
 
-  constructor(private ss: SupervisorService, private router: Router) { }
+  constructor(private ps: PromotorService, private router: Router) { }
 
   ngOnInit(): void {
     this.formularioReactivo();//El formulario quiero a fuerzas que se inicie, debido al formulario establecido en la plantilla,
@@ -49,7 +49,7 @@ export class SupervisoresComponent implements OnInit {
         url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json'
       }
     };
-    this.obtenerSupervisores();
+    this.obtenerPromotores();
   }
 
   formularioReactivo(): void {
@@ -103,33 +103,33 @@ export class SupervisoresComponent implements OnInit {
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-    this.supervisoresGetSubscription.unsubscribe();
-    if (this.supervisorGetSubscription != null || this.supervisorGetSubscription != undefined) {
-      this.supervisorGetSubscription.unsubscribe();
+    this.promotoresGetSubscription.unsubscribe();
+    if (this.promotorGetSubscription != null || this.promotorGetSubscription != undefined) {
+      this.promotorGetSubscription.unsubscribe();
       //console.log('se elimino el get edit')
     }
 
-    if (this.supervisorPostSubscription != null || this.supervisorPostSubscription != undefined) {
-      this.supervisorPostSubscription.unsubscribe();
+    if (this.promotorPostSubscription != null || this.promotorPostSubscription != undefined) {
+      this.promotorPostSubscription.unsubscribe();
       //console.log('se elimino el post')
     }
 
-    if (this.supervisorPutSubscription != null || this.supervisorPutSubscription != undefined) {
-      this.supervisorPutSubscription.unsubscribe();
+    if (this.promotorPutSubscription != null || this.promotorPutSubscription != undefined) {
+      this.promotorPutSubscription.unsubscribe();
       //console.log('se elimino el put')
     }
 
-    if (this.supervisorDeteleSubscription != null || this.supervisorDeteleSubscription != undefined) {
-      this.supervisorDeteleSubscription.unsubscribe();
+    if (this.promotorDeteleSubscription != null || this.promotorDeteleSubscription != undefined) {
+      this.promotorDeteleSubscription.unsubscribe();
       //console.log('se elimino el delete')
     }
     //console.log('ngOnDestroy iniciado');
   }
 
-  obtenerSupervisores() {
+  obtenerPromotores() {
     this.espere();
-    this.supervisoresGetSubscription = this.ss.getSupervisores().subscribe((res: any) => {
-      this.supervisores = res;
+    this.promotoresGetSubscription = this.ps.getPromotores().subscribe((res: any) => {
+      this.promotores = res;
       //console.log(res);
       this.dtTrigger.next(0);
       this.cerrarLoading();
@@ -161,23 +161,23 @@ export class SupervisoresComponent implements OnInit {
   editarAdmin() {
     this.espere();
     //console.log('con que quieres editar verdad prro!!');
-    let supervisor = new Supervisor();//Creamos una variable local de tipo supervisor, no usamos el this.supervisor
-    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.supervisor, es la que se mostro antes de modificar
-    supervisor.nombre = this.formulario.value.nombre;
-    supervisor.apellidos = this.formulario.value.apellidos;
-    if (this.supervisor['email'] != this.formulario.value.email) {
-      supervisor.email = this.formulario.value.email;
+    let promotor = new Promotor();//Creamos una variable local de tipo promotor, no usamos el this.promotor
+    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.promotor, es la que se mostro antes de modificar
+    promotor.nombre = this.formulario.value.nombre;
+    promotor.apellidos = this.formulario.value.apellidos;
+    if (this.promotor['email'] != this.formulario.value.email) {
+      promotor.email = this.formulario.value.email;
     }
-    supervisor.contraseña = this.formulario.value.password;
-    supervisor.genero = this.formulario.value.genero;
-    supervisor.telefono = this.formulario.value.telefono;
-    supervisor.direccion = this.formulario.value.direccion;
-    //supervisor['id'] = this.supervisor['id'];
-    //console.log(supervisor);
-    this.supervisorPutSubscription = this.ss.putSupervisor(supervisor, this.supervisor['id']).subscribe((res: any) => {
+    promotor.contraseña = this.formulario.value.password;
+    promotor.genero = this.formulario.value.genero;
+    promotor.telefono = this.formulario.value.telefono;
+    promotor.direccion = this.formulario.value.direccion;
+    //promotor['id'] = this.promotor['id'];
+    //console.log(promotor);
+    this.promotorPutSubscription = this.ps.putPromotor(promotor, this.promotor['id']).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
-      let mensaje = 'Se edito el supervisor con exito!!';
+      let mensaje = 'Se edito el promotor con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -191,9 +191,9 @@ export class SupervisoresComponent implements OnInit {
   eliminarAdmin() {
     this.espere();
     //console.log('con que quieres eliminar verdad prro!!');
-    this.supervisorDeteleSubscription = this.ss.deleteSupervisor(this.supervisor['id']).subscribe((res: any) => {
+    this.promotorDeteleSubscription = this.ps.deletePromotor(this.promotor['id']).subscribe((res: any) => {
       this.cerrarLoading();
-      let mensaje = 'Se eliminó el supervisor con exito!!';
+      let mensaje = 'Se eliminó el promotor con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -207,19 +207,19 @@ export class SupervisoresComponent implements OnInit {
   agregarAdmin() {
     this.espere();
     //console.log('con que quieres agregar verdad prro!!');
-    let supervisor = new Supervisor();
-    supervisor.nombre = this.formulario.value.nombre;
-    supervisor.apellidos = this.formulario.value.apellidos;
-    supervisor.email = this.formulario.value.email;
-    supervisor.contraseña = this.formulario.value.password;
-    supervisor.genero = this.formulario.value.genero;
-    supervisor.telefono = this.formulario.value.telefono;
-    supervisor.direccion = this.formulario.value.direccion;
-    supervisor.id_rol = 1;
-    this.supervisorPostSubscription = this.ss.postSupervisor(supervisor).subscribe((res: any) => {
+    let promotor = new Promotor();
+    promotor.nombre = this.formulario.value.nombre;
+    promotor.apellidos = this.formulario.value.apellidos;
+    promotor.email = this.formulario.value.email;
+    promotor.contraseña = this.formulario.value.password;
+    promotor.genero = this.formulario.value.genero;
+    promotor.telefono = this.formulario.value.telefono;
+    promotor.direccion = this.formulario.value.direccion;
+    promotor.id_rol = 1;
+    this.promotorPostSubscription = this.ps.postPromotor(promotor).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
-      let mensaje = 'Se agregó el supervisor con exito!!';
+      let mensaje = 'Se agregó el promotor con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -251,26 +251,26 @@ export class SupervisoresComponent implements OnInit {
     })
   }
 
-  entroEnGestion(id_supervisor: string) {
+  entroEnGestion(id_promotor: string) {
     this.estaEnGestion = true;
     this.formulario.reset();//vaciamos el formulario
     this.espere();
-    this.supervisorGetSubscription = this.ss.getSupervisor(id_supervisor).subscribe((res: any) => {
+    this.promotorGetSubscription = this.ps.getPromotor(id_promotor).subscribe((res: any) => {
       //dentro del subscribe estaran los datos consultados de la api, fuera de este no tendras nada
-      this.supervisor = res;
-      //console.log(this.supervisor);
+      this.promotor = res;
+      //console.log(this.promotor);
       this.presentandoDatos();
     });
   }
 
   presentandoDatos() {
     this.formulario.patchValue({
-      nombre: this.supervisor['nombre'],
-      apellidos: this.supervisor['apellidos'],
-      email: this.supervisor['email'],
-      genero: this.supervisor['genero'],
-      telefono: this.supervisor['telefono'],
-      direccion: this.supervisor['direccion']
+      nombre: this.promotor['nombre'],
+      apellidos: this.promotor['apellidos'],
+      email: this.promotor['email'],
+      genero: this.promotor['genero'],
+      telefono: this.promotor['telefono'],
+      direccion: this.promotor['direccion']
     });
     this.cerrarLoading();
   }

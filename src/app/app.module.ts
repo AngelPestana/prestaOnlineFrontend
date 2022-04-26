@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdministradoresComponent } from './pages/personal/administradores/administradores.component';
 import { DataTablesModule } from 'angular-datatables';
 import { SupervisoresComponent } from './pages/personal/supervisores/supervisores.component';
+import { PromotoresComponent } from './pages/personal/promotores/promotores.component';
+import { ClientesComponent } from './pages/personal/clientes/clientes.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { SupervisoresComponent } from './pages/personal/supervisores/supervisore
     HeaderComponent,
     FooterComponent,
     AdministradoresComponent,
-    SupervisoresComponent
+    SupervisoresComponent,
+    PromotoresComponent,
+    ClientesComponent
   ],
   imports: [
     BrowserModule,

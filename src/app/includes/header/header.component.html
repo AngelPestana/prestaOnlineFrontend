@@ -17,8 +17,8 @@
                     <ul class="dropdown-menu animate__animated animate__bounceIn" aria-labelledby="dropdown03">
                         <li *ngIf="id_rol == '1'"><a class="dropdown-item" routerLink="/administradores">Administradores</a></li>
                         <li *ngIf="id_rol == '1'"><a class="dropdown-item" routerLink="/supervisores" href="#">Supervisores</a></li>
-                        <li *ngIf="id_rol == '1' || id_rol == '2'"><a class="dropdown-item" href="#">Promotores</a></li>
-                        <li><a class="dropdown-item" href="#">Clientes</a></li>
+                        <li *ngIf="id_rol == '1' || id_rol == '2'"><a class="dropdown-item" routerLink="/promotores">Promotores</a></li>
+                        <li><a class="dropdown-item" routerLink="/clientes">Clientes</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown" *ngIf="id_rol == '1' || id_rol == '2' || id_rol == '3'">

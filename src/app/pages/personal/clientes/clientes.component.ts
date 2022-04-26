@@ -2,32 +2,32 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { Supervisor } from 'src/app/models/Supervisor';
-import { SupervisorService } from 'src/app/services/supervisor.service';
+import { Cliente } from 'src/app/models/Cliente';
+import { ClienteService } from 'src/app/services/cliente.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-supervisores',
-  templateUrl: './supervisores.component.html',
-  styleUrls: ['./supervisores.component.css']
+  selector: 'app-clientes',
+  templateUrl: './clientes.component.html',
+  styleUrls: ['./clientes.component.css']
 })
-export class SupervisoresComponent implements OnInit {
+export class ClientesComponent implements OnInit {
 
   formulario: any;
   dtOptions: DataTables.Settings = {};
-  supervisores: Supervisor[] = [];
-  supervisor: Supervisor[] = [];
+  clientes: Cliente[] = [];
+  cliente: Cliente[] = [];
   dtTrigger: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   estaEnGestion: boolean = false;
-  supervisoresGetSubscription: Subscription;
-  supervisorGetSubscription: Subscription;
-  supervisorPostSubscription: Subscription;
-  supervisorPutSubscription: Subscription;
-  supervisorDeteleSubscription: Subscription;
+  clientesGetSubscription: Subscription;
+  clienteGetSubscription: Subscription;
+  clientePostSubscription: Subscription;
+  clientePutSubscription: Subscription;
+  clienteDeteleSubscription: Subscription;
   //Nota importante, mandamos los datos por objeto, mientras la lectura de informacion sera manipulado por arreglos
 
-  constructor(private ss: SupervisorService, private router: Router) { }
+  constructor(private cs: ClienteService, private router: Router) { }
 
   ngOnInit(): void {
     this.formularioReactivo();//El formulario quiero a fuerzas que se inicie, debido al formulario establecido en la plantilla,
@@ -49,7 +49,7 @@ export class SupervisoresComponent implements OnInit {
         url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json'
       }
     };
-    this.obtenerSupervisores();
+    this.obtenerClientes();
   }
 
   formularioReactivo(): void {
@@ -85,6 +85,11 @@ export class SupervisoresComponent implements OnInit {
         Validators.required,
         Validators.minLength(15),
         Validators.pattern("[a-zA-Z ]{15,254}")
+      ]),
+      ocupacion: new FormControl('', [
+        Validators.required,
+        Validators.minLength(15),
+        Validators.pattern("[a-zA-Z ]{15,254}")
       ])
     });
     //console.log(this.formulario);
@@ -103,33 +108,33 @@ export class SupervisoresComponent implements OnInit {
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-    this.supervisoresGetSubscription.unsubscribe();
-    if (this.supervisorGetSubscription != null || this.supervisorGetSubscription != undefined) {
-      this.supervisorGetSubscription.unsubscribe();
+    this.clientesGetSubscription.unsubscribe();
+    if (this.clienteGetSubscription != null || this.clienteGetSubscription != undefined) {
+      this.clienteGetSubscription.unsubscribe();
       //console.log('se elimino el get edit')
     }
 
-    if (this.supervisorPostSubscription != null || this.supervisorPostSubscription != undefined) {
-      this.supervisorPostSubscription.unsubscribe();
+    if (this.clientePostSubscription != null || this.clientePostSubscription != undefined) {
+      this.clientePostSubscription.unsubscribe();
       //console.log('se elimino el post')
     }
 
-    if (this.supervisorPutSubscription != null || this.supervisorPutSubscription != undefined) {
-      this.supervisorPutSubscription.unsubscribe();
+    if (this.clientePutSubscription != null || this.clientePutSubscription != undefined) {
+      this.clientePutSubscription.unsubscribe();
       //console.log('se elimino el put')
     }
 
-    if (this.supervisorDeteleSubscription != null || this.supervisorDeteleSubscription != undefined) {
-      this.supervisorDeteleSubscription.unsubscribe();
+    if (this.clienteDeteleSubscription != null || this.clienteDeteleSubscription != undefined) {
+      this.clienteDeteleSubscription.unsubscribe();
       //console.log('se elimino el delete')
     }
     //console.log('ngOnDestroy iniciado');
   }
 
-  obtenerSupervisores() {
+  obtenerClientes() {
     this.espere();
-    this.supervisoresGetSubscription = this.ss.getSupervisores().subscribe((res: any) => {
-      this.supervisores = res;
+    this.clientesGetSubscription = this.cs.getClientes().subscribe((res: any) => {
+      this.clientes = res;
       //console.log(res);
       this.dtTrigger.next(0);
       this.cerrarLoading();
@@ -161,23 +166,24 @@ export class SupervisoresComponent implements OnInit {
   editarAdmin() {
     this.espere();
     //console.log('con que quieres editar verdad prro!!');
-    let supervisor = new Supervisor();//Creamos una variable local de tipo supervisor, no usamos el this.supervisor
-    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.supervisor, es la que se mostro antes de modificar
-    supervisor.nombre = this.formulario.value.nombre;
-    supervisor.apellidos = this.formulario.value.apellidos;
-    if (this.supervisor['email'] != this.formulario.value.email) {
-      supervisor.email = this.formulario.value.email;
+    let cliente = new Cliente();//Creamos una variable local de tipo cliente, no usamos el this.cliente
+    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.cliente, es la que se mostro antes de modificar
+    cliente.nombre = this.formulario.value.nombre;
+    cliente.apellidos = this.formulario.value.apellidos;
+    if (this.cliente['email'] != this.formulario.value.email) {
+      cliente.email = this.formulario.value.email;
     }
-    supervisor.contraseña = this.formulario.value.password;
-    supervisor.genero = this.formulario.value.genero;
-    supervisor.telefono = this.formulario.value.telefono;
-    supervisor.direccion = this.formulario.value.direccion;
-    //supervisor['id'] = this.supervisor['id'];
-    //console.log(supervisor);
-    this.supervisorPutSubscription = this.ss.putSupervisor(supervisor, this.supervisor['id']).subscribe((res: any) => {
+    cliente.contraseña = this.formulario.value.password;
+    cliente.genero = this.formulario.value.genero;
+    cliente.telefono = this.formulario.value.telefono;
+    cliente.direccion = this.formulario.value.direccion;
+    cliente.ocupacion = this.formulario.value.ocupacion;
+    //cliente['id'] = this.cliente['id'];
+    //console.log(cliente);
+    this.clientePutSubscription = this.cs.putCliente(cliente, this.cliente['id']).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
-      let mensaje = 'Se edito el supervisor con exito!!';
+      let mensaje = 'Se edito el cliente con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -191,9 +197,9 @@ export class SupervisoresComponent implements OnInit {
   eliminarAdmin() {
     this.espere();
     //console.log('con que quieres eliminar verdad prro!!');
-    this.supervisorDeteleSubscription = this.ss.deleteSupervisor(this.supervisor['id']).subscribe((res: any) => {
+    this.clienteDeteleSubscription = this.cs.deleteCliente(this.cliente['id']).subscribe((res: any) => {
       this.cerrarLoading();
-      let mensaje = 'Se eliminó el supervisor con exito!!';
+      let mensaje = 'Se eliminó el cliente con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -207,19 +213,20 @@ export class SupervisoresComponent implements OnInit {
   agregarAdmin() {
     this.espere();
     //console.log('con que quieres agregar verdad prro!!');
-    let supervisor = new Supervisor();
-    supervisor.nombre = this.formulario.value.nombre;
-    supervisor.apellidos = this.formulario.value.apellidos;
-    supervisor.email = this.formulario.value.email;
-    supervisor.contraseña = this.formulario.value.password;
-    supervisor.genero = this.formulario.value.genero;
-    supervisor.telefono = this.formulario.value.telefono;
-    supervisor.direccion = this.formulario.value.direccion;
-    supervisor.id_rol = 1;
-    this.supervisorPostSubscription = this.ss.postSupervisor(supervisor).subscribe((res: any) => {
+    let cliente = new Cliente();
+    cliente.nombre = this.formulario.value.nombre;
+    cliente.apellidos = this.formulario.value.apellidos;
+    cliente.email = this.formulario.value.email;
+    cliente.contraseña = this.formulario.value.password;
+    cliente.genero = this.formulario.value.genero;
+    cliente.telefono = this.formulario.value.telefono;
+    cliente.direccion = this.formulario.value.direccion;
+    cliente.ocupacion = this.formulario.value.ocupacion;
+    cliente.id_rol = 1;
+    this.clientePostSubscription = this.cs.postCliente(cliente).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
-      let mensaje = 'Se agregó el supervisor con exito!!';
+      let mensaje = 'Se agregó el cliente con exito!!';
       this.mensajeExito(mensaje);
     }, (error: any) => {
       this.cerrarLoading();
@@ -251,26 +258,27 @@ export class SupervisoresComponent implements OnInit {
     })
   }
 
-  entroEnGestion(id_supervisor: string) {
+  entroEnGestion(id_cliente: string) {
     this.estaEnGestion = true;
     this.formulario.reset();//vaciamos el formulario
     this.espere();
-    this.supervisorGetSubscription = this.ss.getSupervisor(id_supervisor).subscribe((res: any) => {
+    this.clienteGetSubscription = this.cs.getCliente(id_cliente).subscribe((res: any) => {
       //dentro del subscribe estaran los datos consultados de la api, fuera de este no tendras nada
-      this.supervisor = res;
-      //console.log(this.supervisor);
+      this.cliente = res;
+      //console.log(this.cliente);
       this.presentandoDatos();
     });
   }
 
   presentandoDatos() {
     this.formulario.patchValue({
-      nombre: this.supervisor['nombre'],
-      apellidos: this.supervisor['apellidos'],
-      email: this.supervisor['email'],
-      genero: this.supervisor['genero'],
-      telefono: this.supervisor['telefono'],
-      direccion: this.supervisor['direccion']
+      nombre: this.cliente['nombre'],
+      apellidos: this.cliente['apellidos'],
+      email: this.cliente['email'],
+      genero: this.cliente['genero'],
+      telefono: this.cliente['telefono'],
+      direccion: this.cliente['direccion'],
+      ocupacion: this.cliente['ocupacion']
     });
     this.cerrarLoading();
   }
