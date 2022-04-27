@@ -26,11 +26,21 @@ export class CrudPrestamosComponent implements OnInit {
   mensajeEspere: any;
   clientesGetSubscription: Subscription;
   promotoresGetSubscription: Subscription;
+  fecha_inicio: string = "";
+  fecha_final: Date = new Date();
+  fecha_final2: string = "";
+  fechaHoy: string = "";
+  plazo: number = 0;
+  abono_mes: number = 0;
+  deuda_interes: number = 0;
+  montoPrestado: number = 0;
+  intereses: number = 0;
 
   constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private router: Router, private ar: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.ar.snapshot.paramMap.get('id');
+    this.checarFechaHoy();
     //console.log(id);
     if (this.id != null) {
       //entro en gestion del prestamos
@@ -44,6 +54,72 @@ export class CrudPrestamosComponent implements OnInit {
       this.iniciarTabla();
       this.iniciarTabla2();
     }
+  }
+
+  checarFechaHoy() {
+    //Para obtener la fecha de hoy y hacerlo ver directamente desde el min y max del input
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    if (day < 10 && month < 10) {
+      this.fechaHoy = `${year}-0${month}-0${day}`;
+    } else if (day < 10) {
+      this.fechaHoy = `${year}-${month}-0${day}`;
+    } else if (month < 10) {
+      //console.log(`${day}-0${month}-${year}`);
+      this.fechaHoy = `${year}-0${month}-${day}`;
+    } else {
+      //console.log(`${day}-${month}-${year}`);
+      this.fechaHoy = `${year}-${month}-${day}`;
+    }
+  }
+
+  fechaFinal() {
+    //new Date (this.fechaInicio);
+    //this.fechaInicio.setMonth(this.fechaInicio.getMonth() + this.plazo);
+    //Nota importante, a huevo necesito del setDate :v
+    //console.log(this.fecha_inicio);
+    this.fecha_final = new Date(this.fecha_inicio);
+    //console.log(this.fecha_final);
+    let month = this.fecha_final.getMonth();
+    //console.log(month);
+    let day = this.fecha_final.getDate();
+    this.fecha_final.setMonth(month + this.plazo);
+    this.fecha_final.setDate(day + 1);
+    //console.log(this.fecha_final);
+    this.fecha_final2 = this.convertirFechaAString(this.fecha_final);
+    //console.log(this.fecha_final2);
+  }
+
+  convertirFechaAString(fecha: Date): string {
+    let day = fecha.getDate();
+    let month = fecha.getMonth() + 1;
+    let year = fecha.getFullYear();
+    let fechaString = "";
+    if (day < 10 && month < 10) {
+      fechaString = `${year}-0${month}-0${day}`;
+    } else if (day < 10) {
+      fechaString = `${year}-${month}-0${day}`;
+    } else if (month < 10) {
+      //console.log(`${day}-0${month}-${year}`);
+      fechaString = `${year}-0${month}-${day}`;
+    } else {
+      //console.log(`${day}-${month}-${year}`);
+      fechaString = `${year}-${month}-${day}`;
+    }
+    return fechaString;
+  }
+
+  deudaInteres() {
+    let porcentaje = this.intereses / 100;
+    let calcularInteres = this.montoPrestado * porcentaje;
+    this.deuda_interes = this.montoPrestado + calcularInteres;
+  }
+
+  abonosMes() {
+    let abonoSinRedondeo = this.deuda_interes / this.plazo;
+    this.abono_mes = Math.round(abonoSinRedondeo);
   }
 
   mostrarValores() {
@@ -81,12 +157,29 @@ export class CrudPrestamosComponent implements OnInit {
     }
   }
 
+  someClickHandler(info: any): void {
+    let message = info[0] + ' - ' + info[1];
+    console.log(message);
+  }
+
   iniciarTabla() {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
       language: {
         url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json'
+      },
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        const self = this;
+        // Unbind first in order to avoid any duplicate handler
+        // (see https://github.com/l-lin/angular-datatables/issues/87)
+        // Note: In newer jQuery v3 versions, `unbind` and `bind` are 
+        // deprecated in favor of `off` and `on`
+        $('input', row).off('click');
+        $('input', row).on('click', () => {
+          self.someClickHandler(data);
+        });
+        return row;
       }
     };
     this.obtenerClientes();

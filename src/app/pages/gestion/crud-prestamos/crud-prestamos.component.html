@@ -69,4 +69,117 @@
     </div>
 </div>
 
+<div class="container mt-5 mb-5 col-sm-10">
+    <div class="card w-75 container-fluid ">
+        <div class="text-center mt-3">
+            <h5>Ingrese los datos: </h5>
+            <hr>
+        </div>
+        <div class="card-body">
+            <!--<form class="row g-3 needs-validation" novalidate>-->
+            <div class="row g-3">
+                <div class="col-md-6 position-relative">
+                    <label for="validationTooltip01" class="form-label">Cliente: </label>
+                    <input type="text" class="form-control" id="validationTooltip01" placeholder="Ubaldo" disabled>
+                </div>
+                <div class="col-md-6 position-relative">
+                    <label for="validationTooltipUsername" class="form-label">Email del cliente: </label>
+                    <div class="input-group">
+                        <span class="input-group-text">@</span>
+                        <input type="text" class="form-control" id="validationTooltipUsername" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6 position-relative">
+                    <label for="validationTooltip02" class="form-label">Promotor: </label>
+                    <input type="text" class="form-control" id="validationTooltip02" placeholder="Ubaldo" disabled>
+                </div>
+                <div class="col-md-6 position-relative">
+                    <label for="validationTooltip03" class="form-label">Fecha inicio del prestamo</label>
+                    <input type="date" class="form-control" id="validationTooltip03" [min]="fechaHoy"
+                        [(ngModel)]="fecha_inicio" name="fechaInicio">
+                </div>
+                <div class="col-md-4 position-relative">
+                    <label for="validationTooltip04" class="form-label">Fecha final del prestamo</label>
+                    <div class="input-group">
+                        <button class="input-group-text" (click)="fechaFinal()">
+                            <i class="bi bi-calculator-fill"></i>
+                        </button>
+                        <input type="date" class="form-control" id="validationTooltip04" disabled [value]="fecha_final2">
+                    </div>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <label for="validationTooltip05" class="form-label">Plazo en meses</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="">
+                            <i class="bi bi-calendar-date"></i>
+                        </span>
+                        <input type="number" class="form-control" id="validationTooltip05" required
+                            [(ngModel)]="plazo" name="plazo" min="6" max="24">
+                    </div>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <label for="validationTooltip06" class="form-label">Cantidad abonar al mes</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="">$</span>
+                        <input type="number" class="form-control" id="validationTooltip06" required disabled
+                            [value]="abono_mes">
+                        <button class="input-group-text" (click)="abonosMes()">
+                            <i class="bi bi-calculator-fill"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <label for="validationTooltip07" class="form-label">Monto prestado</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="">$</span>
+                        <input type="number" class="form-control" id="validationTooltip07" required
+                            [(ngModel)]="montoPrestado" name="montoPrestado" min="1000" max="20000">
+                    </div>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <label for="validationTooltip08" class="form-label">Porcentaje de interes</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="">%</span>
+                        <select class="form-select" id="validationTooltip08" required [(ngModel)]="intereses"
+                            name="intereses">
+                            <option selected disabled value="">Seleccione...</option>
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                            <option value="20">20%</option>
+                            <option value="25">25%</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <label for="validationTooltip09" class="form-label">Deuda con intereses</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="">$</span>
+                        <input type="number" class="form-control" id="validationTooltip09" required disabled
+                            value="{{deuda_interes}}">
+                        <button class="input-group-text" (click)="deudaInteres()">
+                            <i class="bi bi-calculator-fill"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <button class="btn boton text-white w-100" type="submit">
+                        <i class="bi bi-save2-fill"></i>&nbsp;&nbsp;Guardar
+                    </button>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <button class="btn boton text-white w-100" type="submit">
+                        <i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Editar
+                    </button>
+                </div>
+                <div class="col-md-4 position-relative">
+                    <button class="btn boton text-white w-100" type="submit">
+                        <i class="bi bi-trash-fill"></i>&nbsp;&nbsp;Borrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <app-footer></app-footer>
