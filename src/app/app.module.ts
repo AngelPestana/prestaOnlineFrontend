@@ -15,6 +15,8 @@ import { DataTablesModule } from 'angular-datatables';
 import { SupervisoresComponent } from './pages/personal/supervisores/supervisores.component';
 import { PromotoresComponent } from './pages/personal/promotores/promotores.component';
 import { ClientesComponent } from './pages/personal/clientes/clientes.component';
+import { PrestamosComponent } from './pages/gestion/prestamos/prestamos.component';
+import { CrudPrestamosComponent } from './pages/gestion/crud-prestamos/crud-prestamos.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { ClientesComponent } from './pages/personal/clientes/clientes.component'
     AdministradoresComponent,
     SupervisoresComponent,
     PromotoresComponent,
-    ClientesComponent
+    ClientesComponent,
+    PrestamosComponent,
+    CrudPrestamosComponent
   ],
   imports: [
     BrowserModule,

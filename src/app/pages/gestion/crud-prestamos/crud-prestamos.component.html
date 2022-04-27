@@ -1,0 +1,72 @@
+<app-header></app-header>
+
+<div class="container mt-3 mb-3">
+    <div class="card sin-borde">
+        <div class="card-body">
+            <h5 class="card-title">Agregar/Gestión Prestamo</h5>
+            <p class="card-text">
+                Seleccione las tablas y rellene el formulario!!.
+            </p>
+        </div>
+    </div>
+
+    <div class="mt-3 mb-3">
+        <h5 class="text-center">Seleccione al cliente quien solicita el prestamo</h5>
+        <div class="rounded table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Seleccione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cliente of clientes">
+                        <td>{{ cliente.id }}</td>
+                        <td>{{ cliente.nombre }}</td>
+                        <td>{{ cliente.apellidos }}</td>
+                        <td>{{ cliente.email }}</td>
+                        <td>
+                            <input *ngIf="id != ''" class="form-check-input radio-center" type="radio" name="id_cliente" [checked]="esDelPrestamo(cliente.id)">
+                            <input *ngIf="id == ''" class="form-check-input radio-center" type="radio" name="id_cliente">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3 mb-3">
+        <h5 class="text-center">Seleccione al promotor quien recibira los abonos del prestamo</h5>
+        <div class="rounded table-responsive">
+            <table datatable [dtOptions]="dtOptions2" [dtTrigger]="dtTrigger2" class="row-border hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Seleccione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let promotor of promotores">
+                        <td>{{ promotor.id }}</td>
+                        <td>{{ promotor.nombre }}</td>
+                        <td>{{ promotor.apellidos }}</td>
+                        <td>{{ promotor.email }}</td>
+                        <td>
+                            <input *ngIf="id != ''" class="form-check-input radio-center" type="radio" name="id_promotor" [checked]="esDelPrestamo2(promotor.id)">
+                            <input *ngIf="id == ''" class="form-check-input radio-center" type="radio" name="id_promotor">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

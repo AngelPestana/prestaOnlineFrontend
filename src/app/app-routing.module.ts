@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccesoComponent } from './pages/acceso/acceso.component';
+import { CrudPrestamosComponent } from './pages/gestion/crud-prestamos/crud-prestamos.component';
+import { PrestamosComponent } from './pages/gestion/prestamos/prestamos.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AdministradoresComponent } from './pages/personal/administradores/administradores.component';
 import { ClientesComponent } from './pages/personal/clientes/clientes.component';
@@ -35,6 +37,18 @@ const routes: Routes = [
   {
     path: 'clientes',
     component: ClientesComponent
+  },
+  {
+    path: 'prestamos',
+    component: PrestamosComponent
+  },
+  {
+    path: 'crud-prestamos',
+    component: CrudPrestamosComponent
+  },
+  {
+    path: 'crud-prestamos/:id',
+    component: CrudPrestamosComponent
   },
 ];
 

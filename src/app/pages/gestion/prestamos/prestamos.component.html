@@ -1,0 +1,60 @@
+<app-header></app-header>
+
+<div class="container mt-3 mb-3">
+    <div class="card sin-borde">
+        <div class="card-body">
+            <h5 class="card-title">Control Prestamos</h5>
+            <p class="card-text">
+                Aquí puede consultar, agregar, editar y eliminar los prestamos.
+            </p>
+            <a href="#" class="btn btn-primary" routerLink="/crud-prestamos">Agregar</a>
+        </div>
+    </div>
+
+    <div class="container mt-3 mb-3">
+        <div class="rounded table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Supervisor</th>
+                        <th>Promotor</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Plazo en meses</th>
+                        <th>Cantidad abonada por mes</th>
+                        <th>Monto prestado</th>
+                        <th>Porcentaje interes %</th>
+                        <th>Monto con interes</th>
+                        <th>El cliente debe</th>
+                        <th>Fecha de creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let prestamo of prestamos">
+                        <td>{{ prestamo.id }}</td>
+                        <td>{{ prestamo.Supervisor }}</td>
+                        <td>{{ prestamo.Promotor }}</td>
+                        <td>{{ prestamo.Cliente }}</td>
+                        <td [class]="colorEstado(prestamo.Estado)">{{ prestamo.Estado }}</td>
+                        <td>{{ prestamo.plazo }}</td>
+                        <td>{{ prestamo.cantidad_abonar_mes }}</td>
+                        <td>{{ prestamo.monto_prestado }}</td>
+                        <td>{{ prestamo.porcentaje_interes }}</td>
+                        <td>{{ prestamo.deuda_interes }}</td>
+                        <td>{{ prestamo.cliente_debe }}</td>
+                        <td>{{ prestamo.created_at }}</td>
+                        <td>
+                            <a routerLink="/crud-prestamos/{{prestamo.id}}" class="btn btn-primary text-white">
+                                <i class="bi bi-pencil-square"></i>
+                                Gestión</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>
