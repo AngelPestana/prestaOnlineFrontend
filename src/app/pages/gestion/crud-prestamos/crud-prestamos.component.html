@@ -1,185 +1,186 @@
 <app-header></app-header>
 
-<div class="container mt-3 mb-3">
-    <div class="card sin-borde">
-        <div class="card-body">
-            <h5 class="card-title">Agregar/Gestión Prestamo</h5>
-            <p class="card-text">
-                Seleccione las tablas y rellene el formulario!!.
-            </p>
+<form novalidate [formGroup]="formulario">
+    <div class="container mt-3 mb-3">
+        <div class="card sin-borde">
+            <div class="card-body">
+                <h5 class="card-title">Agregar/Gestión Prestamo</h5>
+                <p class="card-text">
+                    Seleccione las tablas y rellene el formulario!!.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="mt-3 mb-3">
+            <h5 class="text-center">Seleccione al cliente quien solicita el prestamo</h5>
+            <h6 class="text-center text-danger" *ngIf="idCliente == ''">La seleccion del cliente es requerido</h6>
+            <div class="rounded table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Email</th>
+                            <th>Seleccione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cliente of clientes">
+                            <td>{{ cliente.id }}</td>
+                            <td>{{ cliente.nombre }}</td>
+                            <td>{{ cliente.apellidos }}</td>
+                            <td>{{ cliente.email }}</td>
+                            <td>
+                                <input *ngIf="id != ''" class="form-check-input radio-center" type="radio"
+                                    name="id_cliente" (click)="cambiarValorIdCliente(cliente.id)" [checked]="esDelPrestamo(cliente.id)">
+                                <input *ngIf="id == ''" (click)="cambiarValorIdCliente(cliente.id)" class="form-check-input radio-center" type="radio"
+                                    name="id_cliente">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3 mb-3">
+            <h5 class="text-center">Seleccione al promotor quien recibira los abonos del prestamo</h5>
+            <h6 class="text-center text-danger" *ngIf="idPromotor == ''">La seleccion del promotor es requerido</h6>
+            <div class="rounded table-responsive">
+                <table datatable [dtOptions]="dtOptions2" [dtTrigger]="dtTrigger2" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Email</th>
+                            <th>Seleccione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let promotor of promotores">
+                            <td>{{ promotor.id }}</td>
+                            <td>{{ promotor.nombre }}</td>
+                            <td>{{ promotor.apellidos }}</td>
+                            <td>{{ promotor.email }}</td>
+                            <td>
+                                <input *ngIf="id != ''" class="form-check-input radio-center" type="radio"
+                                    name="id_promotor" (click)="cambiarValorIdPromotor(promotor.id)" [checked]="esDelPrestamo2(promotor.id)">
+                                <input *ngIf="id == ''" (click)="cambiarValorIdPromotor(promotor.id)" class="form-check-input radio-center" type="radio"
+                                    name="id_promotor">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="mt-3 mb-3">
-        <h5 class="text-center">Seleccione al cliente quien solicita el prestamo</h5>
-        <div class="rounded table-responsive">
-            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Email</th>
-                        <th>Seleccione</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let cliente of clientes">
-                        <td>{{ cliente.id }}</td>
-                        <td>{{ cliente.nombre }}</td>
-                        <td>{{ cliente.apellidos }}</td>
-                        <td>{{ cliente.email }}</td>
-                        <td>
-                            <input *ngIf="id != ''" class="form-check-input radio-center" type="radio" name="id_cliente" [checked]="esDelPrestamo(cliente.id)">
-                            <input *ngIf="id == ''" class="form-check-input radio-center" type="radio" name="id_cliente">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="mt-3 mb-3">
-        <h5 class="text-center">Seleccione al promotor quien recibira los abonos del prestamo</h5>
-        <div class="rounded table-responsive">
-            <table datatable [dtOptions]="dtOptions2" [dtTrigger]="dtTrigger2" class="row-border hover">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Email</th>
-                        <th>Seleccione</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let promotor of promotores">
-                        <td>{{ promotor.id }}</td>
-                        <td>{{ promotor.nombre }}</td>
-                        <td>{{ promotor.apellidos }}</td>
-                        <td>{{ promotor.email }}</td>
-                        <td>
-                            <input *ngIf="id != ''" class="form-check-input radio-center" type="radio" name="id_promotor" [checked]="esDelPrestamo2(promotor.id)">
-                            <input *ngIf="id == ''" class="form-check-input radio-center" type="radio" name="id_promotor">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="container mt-5 mb-5 col-sm-10">
-    <div class="card w-75 container-fluid ">
-        <div class="text-center mt-3">
-            <h5>Ingrese los datos: </h5>
-            <hr>
-        </div>
-        <div class="card-body">
-            <!--<form class="row g-3 needs-validation" novalidate>-->
-            <div class="row g-3">
-                <div class="col-md-6 position-relative">
-                    <label for="validationTooltip01" class="form-label">Cliente: </label>
-                    <input type="text" class="form-control" id="validationTooltip01" placeholder="Ubaldo" disabled>
-                </div>
-                <div class="col-md-6 position-relative">
-                    <label for="validationTooltipUsername" class="form-label">Email del cliente: </label>
-                    <div class="input-group">
-                        <span class="input-group-text">@</span>
-                        <input type="text" class="form-control" id="validationTooltipUsername" disabled>
+    <div class="container mt-5 mb-5 col-sm-10">
+        <div class="card w-75 container-fluid ">
+            <div class="text-center mt-3">
+                <h5>Ingrese los datos: </h5>
+                <hr>
+            </div>
+            <div class="card-body">
+                <!--<form class="row g-3 needs-validation" novalidate>-->
+                <div class="row g-3">
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip01" class="form-label">Cliente: </label>
+                        <input type="text" class="form-control" id="validationTooltip01" placeholder="Ubaldo" formControlName="Cliente">
                     </div>
-                </div>
-                <div class="col-md-6 position-relative">
-                    <label for="validationTooltip02" class="form-label">Promotor: </label>
-                    <input type="text" class="form-control" id="validationTooltip02" placeholder="Ubaldo" disabled>
-                </div>
-                <div class="col-md-6 position-relative">
-                    <label for="validationTooltip03" class="form-label">Fecha inicio del prestamo</label>
-                    <input type="date" class="form-control" id="validationTooltip03" [min]="fechaHoy"
-                        [(ngModel)]="fecha_inicio" name="fechaInicio">
-                </div>
-                <div class="col-md-4 position-relative">
-                    <label for="validationTooltip04" class="form-label">Fecha final del prestamo</label>
-                    <div class="input-group">
-                        <button class="input-group-text" (click)="fechaFinal()">
-                            <i class="bi bi-calculator-fill"></i>
-                        </button>
-                        <input type="date" class="form-control" id="validationTooltip04" disabled [value]="fecha_final2">
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip02" class="form-label">Promotor: </label>
+                        <input type="text" class="form-control" id="validationTooltip02" placeholder="Ubaldo" formControlName="Promotor">
                     </div>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <label for="validationTooltip05" class="form-label">Plazo en meses</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="">
-                            <i class="bi bi-calendar-date"></i>
-                        </span>
-                        <input type="number" class="form-control" id="validationTooltip05" required
-                            [(ngModel)]="plazo" name="plazo" min="6" max="24">
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip03" class="form-label">Fecha inicio del prestamo</label>
+                        <input type="date" class="form-control" id="validationTooltip03" name="fechaInicio" [min]="checarFechaHoy()" formControlName="fecha_inicio_prestamo">
                     </div>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <label for="validationTooltip06" class="form-label">Cantidad abonar al mes</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="">$</span>
-                        <input type="number" class="form-control" id="validationTooltip06" required disabled
-                            [value]="abono_mes">
-                        <button class="input-group-text" (click)="abonosMes()">
-                            <i class="bi bi-calculator-fill"></i>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip04" class="form-label">Fecha final del prestamo</label>
+                        <div class="input-group">
+                            <button class="input-group-text" (click)="fechaFinal()">
+                                <i class="bi bi-calculator-fill"></i>
+                            </button>
+                            <input type="date" class="form-control" id="validationTooltip04"
+                                formControlName="fecha_final_prestamo">
+                        </div>
+                    </div>
+                    <div class="col-md-4 position-relative">
+                        <label for="validationTooltip05" class="form-label">Plazo en meses</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">
+                                <i class="bi bi-calendar-date"></i>
+                            </span>
+                            <input type="number" [min]="minimoMes" [max]="maximoMes" class="form-control" id="validationTooltip05"
+                                name="plazo" formControlName="plazo">
+                        </div>
+                    </div>
+                    <div class="col-md-4 position-relative">
+                        <label for="validationTooltip06" class="form-label">Cantidad abonar al mes</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip06"
+                                formControlName="cantidad_abonar_mes">
+                            <button class="input-group-text" (click)="abonosMes()">
+                                <i class="bi bi-calculator-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 position-relative">
+                        <label for="validationTooltip07" class="form-label">Monto prestado</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip07"
+                                name="montoPrestado" min="1000" max="20000" formControlName="monto_prestado">
+                        </div>
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip08" class="form-label">Porcentaje de interes</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">%</span>
+                            <select class="form-select" id="validationTooltip08"
+                                name="intereses" formControlName="intereses">
+                                <option selected disabled value="">Seleccione...</option>
+                                <option value="5">5%</option>
+                                <option value="10">10%</option>
+                                <option value="15">15%</option>
+                                <option value="20">20%</option>
+                                <option value="25">25%</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip09" class="form-label">Deuda con intereses</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip09" formControlName="deuda_interes">
+                            <button class="input-group-text" (click)="deudaInteres()">
+                                <i class="bi bi-calculator-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 position-relative" *ngIf="id == null">
+                        <button class="btn btn-primary text-white w-100" type="submit" [disabled]="!formulario.valid">
+                            <i class="bi bi-save2-fill"></i>&nbsp;&nbsp;Guardar
                         </button>
                     </div>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <label for="validationTooltip07" class="form-label">Monto prestado</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="">$</span>
-                        <input type="number" class="form-control" id="validationTooltip07" required
-                            [(ngModel)]="montoPrestado" name="montoPrestado" min="1000" max="20000">
-                    </div>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <label for="validationTooltip08" class="form-label">Porcentaje de interes</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="">%</span>
-                        <select class="form-select" id="validationTooltip08" required [(ngModel)]="intereses"
-                            name="intereses">
-                            <option selected disabled value="">Seleccione...</option>
-                            <option value="5">5%</option>
-                            <option value="10">10%</option>
-                            <option value="15">15%</option>
-                            <option value="20">20%</option>
-                            <option value="25">25%</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <label for="validationTooltip09" class="form-label">Deuda con intereses</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="">$</span>
-                        <input type="number" class="form-control" id="validationTooltip09" required disabled
-                            value="{{deuda_interes}}">
-                        <button class="input-group-text" (click)="deudaInteres()">
-                            <i class="bi bi-calculator-fill"></i>
+                    <div class="col-md-6 position-relative" *ngIf="id != null">
+                        <button class="btn btn-primary text-white w-100" type="submit" [disabled]="!formulario.valid">
+                            <i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Editar
                         </button>
                     </div>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <button class="btn boton text-white w-100" type="submit">
-                        <i class="bi bi-save2-fill"></i>&nbsp;&nbsp;Guardar
-                    </button>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <button class="btn boton text-white w-100" type="submit">
-                        <i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Editar
-                    </button>
-                </div>
-                <div class="col-md-4 position-relative">
-                    <button class="btn boton text-white w-100" type="submit">
-                        <i class="bi bi-trash-fill"></i>&nbsp;&nbsp;Borrar
-                    </button>
+                    <div class="col-md-6 position-relative" *ngIf="id != null">
+                        <button class="btn btn-primary text-white w-100" type="submit">
+                            <i class="bi bi-trash-fill"></i>&nbsp;&nbsp;Borrar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <app-footer></app-footer>

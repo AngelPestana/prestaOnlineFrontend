@@ -8,6 +8,7 @@ import { PromotorService } from 'src/app/services/promotor.service';
 import { Promotor } from 'src/app/models/Promotor';
 import { PrestamoService } from 'src/app/services/prestamo.service';
 import { Prestamo } from 'src/app/models/Prestamo';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-crud-prestamos',
@@ -15,7 +16,7 @@ import { Prestamo } from 'src/app/models/Prestamo';
   styleUrls: ['./crud-prestamos.component.css']
 })
 export class CrudPrestamosComponent implements OnInit {
-  id: string = "";
+  id: string = '';
   dtOptions: DataTables.Settings = {};
   dtOptions2: DataTables.Settings = {};
   prestamo: Prestamo[] = [];
@@ -26,22 +27,21 @@ export class CrudPrestamosComponent implements OnInit {
   mensajeEspere: any;
   clientesGetSubscription: Subscription;
   promotoresGetSubscription: Subscription;
-  fecha_inicio: string = "";
-  fecha_final: Date = new Date();
-  fecha_final2: string = "";
-  fechaHoy: string = "";
-  plazo: number = 0;
-  abono_mes: number = 0;
-  deuda_interes: number = 0;
-  montoPrestado: number = 0;
-  intereses: number = 0;
+  formulario: any;
+  minimoMes = 6;
+  maximoMes = 24;
+  atributoDeudaInteres = 0;
+  radioPromotor = 0;
+  idPromotor = '';
+  idCliente = '';
 
   constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private router: Router, private ar: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.ar.snapshot.paramMap.get('id');
     this.checarFechaHoy();
-    //console.log(id);
+    this.formularioReactivo();
+    //console.log(this.id);
     if (this.id != null) {
       //entro en gestion del prestamos
       this.mostrarValores();
@@ -56,40 +56,43 @@ export class CrudPrestamosComponent implements OnInit {
     }
   }
 
-  checarFechaHoy() {
+  checarFechaHoy(): string {
     //Para obtener la fecha de hoy y hacerlo ver directamente desde el min y max del input
     let date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
+    let fechaHoy = "";
     if (day < 10 && month < 10) {
-      this.fechaHoy = `${year}-0${month}-0${day}`;
+      //console.log(fechaHoy);
+      return fechaHoy = `${year}-0${month}-0${day}`;
     } else if (day < 10) {
-      this.fechaHoy = `${year}-${month}-0${day}`;
+      //console.log(this.fechaHoy);
+      return fechaHoy = `${year}-${month}-0${day}`;
     } else if (month < 10) {
       //console.log(`${day}-0${month}-${year}`);
-      this.fechaHoy = `${year}-0${month}-${day}`;
+      //console.log(this.fechaHoy);
+      return fechaHoy = `${year}-0${month}-${day}`;
     } else {
       //console.log(`${day}-${month}-${year}`);
-      this.fechaHoy = `${year}-${month}-${day}`;
+      //console.log(this.fechaHoy);
+      return fechaHoy = `${year}-${month}-${day}`;
     }
+    
   }
 
   fechaFinal() {
-    //new Date (this.fechaInicio);
-    //this.fechaInicio.setMonth(this.fechaInicio.getMonth() + this.plazo);
-    //Nota importante, a huevo necesito del setDate :v
-    //console.log(this.fecha_inicio);
-    this.fecha_final = new Date(this.fecha_inicio);
-    //console.log(this.fecha_final);
-    let month = this.fecha_final.getMonth();
-    //console.log(month);
-    let day = this.fecha_final.getDate();
-    this.fecha_final.setMonth(month + this.plazo);
-    this.fecha_final.setDate(day + 1);
-    //console.log(this.fecha_final);
-    this.fecha_final2 = this.convertirFechaAString(this.fecha_final);
-    //console.log(this.fecha_final2);
+    let fecha_inicio = this.formulario.value.fecha_inicio_prestamo;
+    let plazo = this.formulario.value.plazo;
+    let fecha_final = new Date(fecha_inicio);
+    let month = fecha_final.getMonth();
+    let day = fecha_final.getDate();
+    fecha_final.setMonth(month + plazo);
+    fecha_final.setDate(day + 1);
+    let fecha_final2 = this.convertirFechaAString(fecha_final);
+    this.formulario.patchValue({
+      fecha_final_prestamo: fecha_final2
+    });
   }
 
   convertirFechaAString(fecha: Date): string {
@@ -102,33 +105,122 @@ export class CrudPrestamosComponent implements OnInit {
     } else if (day < 10) {
       fechaString = `${year}-${month}-0${day}`;
     } else if (month < 10) {
-      //console.log(`${day}-0${month}-${year}`);
       fechaString = `${year}-0${month}-${day}`;
     } else {
-      //console.log(`${day}-${month}-${year}`);
       fechaString = `${year}-${month}-${day}`;
     }
     return fechaString;
   }
 
+  formularioReactivo(): void {
+    this.formulario = new FormGroup({
+      Cliente: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ]),
+      Promotor: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ]),
+      fecha_inicio_prestamo: new FormControl('', [
+        Validators.required
+      ]),
+      fecha_final_prestamo: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ]),
+      plazo: new FormControl('', [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(2),
+        Validators.pattern("[0-9]{1,2}")
+      ]),
+      cantidad_abonar_mes: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ]),
+      monto_prestado: new FormControl('', [
+        Validators.required
+      ]),
+      intereses: new FormControl('', [
+        Validators.required
+      ]),
+      deuda_interes: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ])
+    });
+  }
+
   deudaInteres() {
-    let porcentaje = this.intereses / 100;
-    let calcularInteres = this.montoPrestado * porcentaje;
-    this.deuda_interes = this.montoPrestado + calcularInteres;
+    let intereses = this.formulario.value.intereses;
+    let monto_prestado = this.formulario.value.monto_prestado;
+    let porcentaje = intereses / 100;
+    let calcularInteres = monto_prestado * porcentaje;
+    let deuda_interes = monto_prestado + calcularInteres;
+    this.atributoDeudaInteres = deuda_interes;
+    this.formulario.patchValue({
+      deuda_interes: deuda_interes
+    });
   }
 
   abonosMes() {
-    let abonoSinRedondeo = this.deuda_interes / this.plazo;
-    this.abono_mes = Math.round(abonoSinRedondeo);
+    let deuda_interes = this.atributoDeudaInteres;
+    let plazo = this.formulario.value.plazo;
+    console.log(deuda_interes);
+    console.log(plazo);
+    let abonoSinRedondeo = deuda_interes / plazo;
+    let abono_mes = Math.round(abonoSinRedondeo);
+    this.formulario.patchValue({
+      cantidad_abonar_mes: abono_mes
+    });
+  }
+
+  cambiarValorIdPromotor(idPromotor: string) {
+    this.idPromotor = idPromotor;
+    //console.log(this.idPromotor);
+  }
+
+  cambiarValorIdCliente(idCliente: string) {
+    this.idCliente = idCliente;
+    //console.log(this.idPromotor);
   }
 
   mostrarValores() {
     this.ps2.getPrestamo(this.id).subscribe((res: any) => {
       this.prestamo = res;
+      this.presentandoDatos();
       //console.log(res);
     }, (error: any) => {
       //console.log(error);
     });
+  }
+
+  presentandoDatos() {
+    this.formulario.patchValue({
+      Cliente: this.prestamo['Cliente'],
+      Promotor: this.prestamo['Promotor'],
+      fecha_inicio_prestamo: this.prestamo['fecha_inicio_prestamo'],
+      fecha_final_prestamo: this.prestamo['fecha_final_prestamo'],
+      plazo: this.prestamo['plazo'],
+      cantidad_abonar_mes: this.prestamo['cantidad_abonar_mes'],
+      monto_prestado: this.prestamo['monto_prestado'],
+      intereses: this.prestamo['porcentaje_interes'],
+      deuda_interes: this.prestamo['deuda_interes']
+    });
+    this.idPromotor = this.prestamo['id_promotor'];
+    console.log(this.formulario);
+    //this.formulario.id_cliente.fireUncheck();
   }
 
   borroLocalStorage(): boolean {
@@ -142,6 +234,7 @@ export class CrudPrestamosComponent implements OnInit {
   }
 
   esDelPrestamo (id_cliente: string): string{
+    //console.log(id_cliente);
     if (this.prestamo['id_cliente'] == id_cliente){
       return "checked";
     }else{
@@ -241,6 +334,10 @@ export class CrudPrestamosComponent implements OnInit {
     this.dtTrigger.unsubscribe();
     this.clientesGetSubscription.unsubscribe();
     this.promotoresGetSubscription.unsubscribe();
+  }
+
+  get formularioControl() {//NO borrar
+    return this.formulario.controls;
   }
 
 }
