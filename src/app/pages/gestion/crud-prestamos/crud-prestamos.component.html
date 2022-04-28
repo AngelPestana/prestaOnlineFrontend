@@ -137,7 +137,7 @@
                                 name="montoPrestado" min="1000" max="20000" formControlName="monto_prestado">
                         </div>
                     </div>
-                    <div class="col-md-6 position-relative">
+                    <div class="col-md-4 position-relative">
                         <label for="validationTooltip08" class="form-label">Porcentaje de interes</label>
                         <div class="input-group">
                             <span class="input-group-text" id="">%</span>
@@ -152,7 +152,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6 position-relative">
+                    <div class="col-md-4 position-relative">
                         <label for="validationTooltip09" class="form-label">Deuda con intereses</label>
                         <div class="input-group">
                             <span class="input-group-text" id="">$</span>
@@ -162,13 +162,26 @@
                             </button>
                         </div>
                     </div>
+                    <div class="col-md-4 position-relative">
+                        <label for="validationTooltip08" class="form-label">Estado</label>
+                        <div class="input-group">
+                            <select class="form-select" id="validationTooltip08"
+                                name="intereses" formControlName="id_estado">
+                                <option selected disabled value="">Seleccione...</option>
+                                <option value="1" class="text-success">Aprobado</option>
+                                <option value="2" class="text-warning">Pendiente</option>
+                                <option value="3" class="text-danger">Cancelado</option>
+                                <option value="4" class="text-secondary">Finalizado</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-12 position-relative" *ngIf="id == null">
                         <button class="btn btn-primary text-white w-100" type="submit" [disabled]="!formulario.valid">
                             <i class="bi bi-save2-fill"></i>&nbsp;&nbsp;Guardar
                         </button>
                     </div>
                     <div class="col-md-6 position-relative" *ngIf="id != null">
-                        <button class="btn btn-primary text-white w-100" type="submit" [disabled]="!formulario.valid">
+                        <button class="btn btn-primary text-white w-100" type="submit" (click)="editarPrestamo()" [disabled]="!formulario.valid">
                             <i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Editar
                         </button>
                     </div>

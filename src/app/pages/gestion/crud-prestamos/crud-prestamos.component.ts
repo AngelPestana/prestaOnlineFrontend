@@ -25,13 +25,19 @@ export class CrudPrestamosComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger2: Subject<any> = new Subject<any>();
   mensajeEspere: any;
+  prestamoGetSubscription: Subscription;
+  prestamoPutSubscription: Subscription;
+  prestamoPostSubscription: Subscription;
+  prestamoDeteleSubscription: Subscription;
   clientesGetSubscription: Subscription;
   promotoresGetSubscription: Subscription;
   formulario: any;
   minimoMes = 6;
   maximoMes = 24;
+  //atributos para almacenar el valor de los input almacenados, ya que el formulario reactivo no los almacena cuandos estos son disabled
+  atributoFechaFinalPrestamo = '';
   atributoDeudaInteres = 0;
-  radioPromotor = 0;
+  atributoCantidadAbonarMes = 0;
   idPromotor = '';
   idCliente = '';
 
@@ -93,6 +99,7 @@ export class CrudPrestamosComponent implements OnInit {
     this.formulario.patchValue({
       fecha_final_prestamo: fecha_final2
     });
+    this.atributoFechaFinalPrestamo = fecha_final2;
   }
 
   convertirFechaAString(fecha: Date): string {
@@ -158,6 +165,9 @@ export class CrudPrestamosComponent implements OnInit {
         disabled: true
       }, [
         Validators.required
+      ]),
+      id_estado: new FormControl('', [
+        Validators.required
       ])
     });
   }
@@ -172,18 +182,20 @@ export class CrudPrestamosComponent implements OnInit {
     this.formulario.patchValue({
       deuda_interes: deuda_interes
     });
+    this.atributoDeudaInteres = deuda_interes;
   }
 
   abonosMes() {
     let deuda_interes = this.atributoDeudaInteres;
     let plazo = this.formulario.value.plazo;
-    console.log(deuda_interes);
-    console.log(plazo);
+    //console.log(deuda_interes);
+    //console.log(plazo);
     let abonoSinRedondeo = deuda_interes / plazo;
     let abono_mes = Math.round(abonoSinRedondeo);
     this.formulario.patchValue({
       cantidad_abonar_mes: abono_mes
     });
+    this.atributoCantidadAbonarMes = abono_mes;
   }
 
   cambiarValorIdPromotor(idPromotor: string) {
@@ -197,7 +209,7 @@ export class CrudPrestamosComponent implements OnInit {
   }
 
   mostrarValores() {
-    this.ps2.getPrestamo(this.id).subscribe((res: any) => {
+    this.prestamoGetSubscription = this.ps2.getPrestamo(this.id).subscribe((res: any) => {
       this.prestamo = res;
       this.presentandoDatos();
       //console.log(res);
@@ -212,14 +224,21 @@ export class CrudPrestamosComponent implements OnInit {
       Promotor: this.prestamo['Promotor'],
       fecha_inicio_prestamo: this.prestamo['fecha_inicio_prestamo'],
       fecha_final_prestamo: this.prestamo['fecha_final_prestamo'],
-      plazo: this.prestamo['plazo'],
-      cantidad_abonar_mes: this.prestamo['cantidad_abonar_mes'],
-      monto_prestado: this.prestamo['monto_prestado'],
-      intereses: this.prestamo['porcentaje_interes'],
-      deuda_interes: this.prestamo['deuda_interes']
+      plazo: parseInt(this.prestamo['plazo']),
+      cantidad_abonar_mes: parseFloat(this.prestamo['cantidad_abonar_mes']),
+      monto_prestado: parseFloat(this.prestamo['monto_prestado']),
+      intereses: parseFloat(this.prestamo['porcentaje_interes']),
+      deuda_interes: parseFloat(this.prestamo['deuda_interes']),
+      id_estado: parseInt(this.prestamo['id_estado'])
     });
+    //console.log(this.prestamo);
     this.idPromotor = this.prestamo['id_promotor'];
-    console.log(this.formulario);
+    this.idCliente = this.prestamo['id_cliente'];
+    this.atributoFechaFinalPrestamo = this.prestamo['fecha_final_prestamo'];
+    this.atributoDeudaInteres = parseFloat(this.prestamo['deuda_interes']);
+    this.atributoCantidadAbonarMes = parseFloat(this.prestamo['cantidad_abonar_mes']);
+
+    //console.log(this.formulario);
     //this.formulario.id_cliente.fireUncheck();
   }
 
@@ -251,8 +270,19 @@ export class CrudPrestamosComponent implements OnInit {
   }
 
   someClickHandler(info: any): void {
-    let message = info[0] + ' - ' + info[1];
-    console.log(message);
+    let message = info[1] + ' ' + info[2];
+    this.formulario.patchValue({
+      Cliente: message,
+    });
+    //console.log(message);
+  }
+
+  someClickHandler2(info: any): void {
+    let message = info[1] + ' ' + info[2];
+    this.formulario.patchValue({
+      Promotor: message,
+    });
+    //console.log(message);
   }
 
   iniciarTabla() {
@@ -284,6 +314,18 @@ export class CrudPrestamosComponent implements OnInit {
       pageLength: 5,
       language: {
         url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json'
+      },
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        const self = this;
+        // Unbind first in order to avoid any duplicate handler
+        // (see https://github.com/l-lin/angular-datatables/issues/87)
+        // Note: In newer jQuery v3 versions, `unbind` and `bind` are 
+        // deprecated in favor of `off` and `on`
+        $('input', row).off('click');
+        $('input', row).on('click', () => {
+          self.someClickHandler2(data);
+        });
+        return row;
       }
     };
     this.obtenerPromotores();
@@ -311,6 +353,66 @@ export class CrudPrestamosComponent implements OnInit {
     }));
   }
 
+  editarPrestamo() {
+    this.espere();
+    let prestamo = new Prestamo();//Creamos una variable local de tipo administrador, no usamos el this.administrador
+    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.administrador, es la que se mostro antes de modificar
+    prestamo.id_promotor = this.idPromotor;
+    prestamo.id_cliente = this.idCliente;
+    prestamo.fecha_final_prestamo = this.atributoFechaFinalPrestamo;
+    prestamo.fecha_inicio_prestamo = this.formulario.value.fecha_inicio_prestamo;
+    prestamo.plazo = this.formulario.value.plazo;
+    prestamo.cantidad_abonar_mes = this.atributoCantidadAbonarMes;
+    prestamo.monto_prestado = this.formulario.value.monto_prestado;
+    prestamo.porcentaje_interes = this.formulario.value.intereses;
+    prestamo.deuda_interes = this.atributoDeudaInteres;
+    prestamo.id_estado = this.formulario.value.id_estado
+    //console.log(prestamo);
+    //console.log(this.prestamo['id']);
+    this.prestamoPutSubscription = this.ps2.putPrestamo(prestamo, this.prestamo['id']).subscribe((res: any) => {
+      this.cerrarLoading();
+      let mensaje = 'Se editó el prestamo con exito!!';
+      this.mensajeExito(mensaje);
+    }, (error: any) => {
+      this.cerrarLoading();
+      let mensajeErrorConEtiquetas = error.error.messages.error;
+      let mensajeError = mensajeErrorConEtiquetas.replace(/<[^>]*>?/g, '');
+      this.mensajeError(mensajeError);
+    });
+  }
+
+  agregarPrestamo() {
+    console.log('hola')
+  }
+
+  mensajeExito(mensaje: string) {
+    Swal.fire({
+      icon: 'success',
+      title: mensaje,
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.router.navigate(['/prestamos']);//Para que me rediriga a la tabla prestamos
+      }
+    })
+  }
+
+  mensajeError(mensaje: string) {
+    Swal.fire({
+      icon: 'error',
+      title: mensaje,
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.router.navigate(['/prestamos']);//Para que me rediriga a la tabla prestamos
+      }
+    })
+  }
+
   espere() {
     this.mensajeEspere = Swal.fire({
       title: 'Por favor espere...',
@@ -334,6 +436,22 @@ export class CrudPrestamosComponent implements OnInit {
     this.dtTrigger.unsubscribe();
     this.clientesGetSubscription.unsubscribe();
     this.promotoresGetSubscription.unsubscribe();
+    this.prestamoGetSubscription.unsubscribe();
+
+    if (this.prestamoPostSubscription != null || this.prestamoPostSubscription != undefined) {
+      this.prestamoPostSubscription.unsubscribe();
+      //console.log('se elimino el post')
+    }
+
+    if (this.prestamoPutSubscription != null || this.prestamoPutSubscription != undefined) {
+      this.prestamoPutSubscription.unsubscribe();
+      //console.log('se elimino el put')
+    }
+
+    if (this.prestamoDeteleSubscription != null || this.prestamoDeteleSubscription != undefined) {
+      this.prestamoDeteleSubscription.unsubscribe();
+      //console.log('se elimino el delete')
+    }
   }
 
   get formularioControl() {//NO borrar
