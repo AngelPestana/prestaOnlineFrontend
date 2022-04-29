@@ -134,7 +134,7 @@
                         <div class="input-group">
                             <span class="input-group-text" id="">$</span>
                             <input type="number" class="form-control" id="validationTooltip07"
-                                name="montoPrestado" min="1000" max="20000" formControlName="monto_prestado">
+                                name="montoPrestado" [min]="minimoMonto" [max]="maximoMonto" formControlName="monto_prestado">
                         </div>
                     </div>
                     <div class="col-md-4 position-relative">
@@ -176,7 +176,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 position-relative" *ngIf="id == null">
-                        <button class="btn btn-primary text-white w-100" type="submit" [disabled]="!formulario.valid">
+                        <button class="btn btn-primary text-white w-100" type="submit" (click)="agregarPrestamo()" [disabled]="!formulario.valid">
                             <i class="bi bi-save2-fill"></i>&nbsp;&nbsp;Guardar
                         </button>
                     </div>

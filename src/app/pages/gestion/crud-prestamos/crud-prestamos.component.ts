@@ -34,6 +34,8 @@ export class CrudPrestamosComponent implements OnInit {
   formulario: any;
   minimoMes = 6;
   maximoMes = 24;
+  minimoMonto = 1000;
+  maximoMonto = 50000;
   //atributos para almacenar el valor de los input almacenados, ya que el formulario reactivo no los almacena cuandos estos son disabled
   atributoFechaFinalPrestamo = '';
   atributoDeudaInteres = 0;
@@ -382,7 +384,32 @@ export class CrudPrestamosComponent implements OnInit {
   }
 
   agregarPrestamo() {
-    console.log('hola')
+    this.espere();
+    let prestamo = new Prestamo();//Creamos una variable local de tipo administrador, no usamos el this.administrador
+    //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.administrador, es la que se mostro antes de modificar
+    prestamo.id_promotor = this.idPromotor;
+    prestamo.id_cliente = this.idCliente;
+    prestamo.fecha_final_prestamo = this.atributoFechaFinalPrestamo;
+    prestamo.fecha_inicio_prestamo = this.formulario.value.fecha_inicio_prestamo;
+    prestamo.plazo = this.formulario.value.plazo;
+    prestamo.cantidad_abonar_mes = this.atributoCantidadAbonarMes;
+    prestamo.monto_prestado = this.formulario.value.monto_prestado;
+    prestamo.porcentaje_interes = this.formulario.value.intereses;
+    prestamo.deuda_interes = this.atributoDeudaInteres;
+    prestamo.id_estado = this.formulario.value.id_estado
+    console.log(prestamo);
+    //console.log(this.prestamo['id']);
+    /*
+    this.prestamoPostSubscription = this.ps2.postPrestamo(prestamo).subscribe((res: any) => {
+      this.cerrarLoading();
+      let mensaje = 'Se agregó el prestamo con exito!!';
+      this.mensajeExito(mensaje);
+    }, (error: any) => {
+      this.cerrarLoading();
+      let mensajeErrorConEtiquetas = error.error.messages.error;
+      let mensajeError = mensajeErrorConEtiquetas.replace(/<[^>]*>?/g, '');
+      this.mensajeError(mensajeError);
+    });*/
   }
 
   mensajeExito(mensaje: string) {
