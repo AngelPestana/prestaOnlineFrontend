@@ -54,14 +54,9 @@ export class CrudPrestamosComponent implements OnInit {
       //entro en gestion del prestamos
       this.mostrarValores();
     }
-    if (this.borroLocalStorage()) {//Si borro el localstorage
-      this.router.navigate(['/acceso']);//entonces que redireccione al login
-    } else {//si no, entonces se queda en la pagina y
-      //que haga lo que tenga que hacer
-      this.espere();
-      this.iniciarTabla();
-      this.iniciarTabla2();
-    }
+    this.espere();
+    this.iniciarTabla();
+    this.iniciarTabla2();
   }
 
   checarFechaHoy(): string {
@@ -217,6 +212,11 @@ export class CrudPrestamosComponent implements OnInit {
       //console.log(res);
     }, (error: any) => {
       //console.log(error);
+      //Este es para que el supervisor no acceda a otros prestamos de los otros supervisores
+      this.cerrarLoading();
+      let mensajeErrorConEtiquetas = error.error.messages.error;
+      let mensajeError = mensajeErrorConEtiquetas.replace(/<[^>]*>?/g, '');
+      this.mensajeError(mensajeError);
     });
   }
 
@@ -242,16 +242,6 @@ export class CrudPrestamosComponent implements OnInit {
 
     //console.log(this.formulario);
     //this.formulario.id_cliente.fireUncheck();
-  }
-
-  borroLocalStorage(): boolean {
-    //console.log(localStorage.getItem('accedio'));
-    if (localStorage.getItem('token') == null || localStorage.getItem('token') == undefined) {
-      return true;
-      //this.router.navigate(['/acceso']);
-    } else {
-      return false;
-    }
   }
 
   esDelPrestamo(id_cliente: string): string {

@@ -8,6 +8,11 @@ import { AdministradoresComponent } from './pages/personal/administradores/admin
 import { ClientesComponent } from './pages/personal/clientes/clientes.component';
 import { PromotoresComponent } from './pages/personal/promotores/promotores.component';
 import { SupervisoresComponent } from './pages/personal/supervisores/supervisores.component';
+import { VigilanteAccedioGuard } from './vigilantes/vigilante-accedio.guard';
+import { VigilanteAdministradoresSupervisoresPromotoresGuard } from './vigilantes/vigilante-administradores-supervisores-promotores.guard';
+import { VigilanteAdministradoresSupervisoresGuard } from './vigilantes/vigilante-administradores-supervisores.guard';
+import { VigilanteAdministradoresGuard } from './vigilantes/vigilante-administradores.guard';
+import { VigilanteSupervisoresGuard } from './vigilantes/vigilante-supervisores.guard';
 
 const routes: Routes = [
   {
@@ -24,31 +29,38 @@ const routes: Routes = [
   },
   {
     path: 'administradores',
-    component: AdministradoresComponent
+    component: AdministradoresComponent,
+    canActivate: [VigilanteAdministradoresGuard]
   },
   {
     path: 'supervisores',
-    component: SupervisoresComponent
+    component: SupervisoresComponent,
+    canActivate: [VigilanteAdministradoresGuard]
   },
   {
     path: 'promotores',
-    component: PromotoresComponent
+    component: PromotoresComponent,
+    canActivate: [VigilanteAdministradoresSupervisoresGuard]
   },
   {
     path: 'clientes',
-    component: ClientesComponent
+    component: ClientesComponent,
+    canActivate: [VigilanteAdministradoresSupervisoresPromotoresGuard]
   },
   {
     path: 'prestamos',
-    component: PrestamosComponent
+    component: PrestamosComponent,
+    canActivate: [VigilanteAccedioGuard]
   },
   {
     path: 'crud-prestamos',
-    component: CrudPrestamosComponent
+    component: CrudPrestamosComponent,
+    canActivate: [VigilanteSupervisoresGuard]
   },
   {
     path: 'crud-prestamos/:id',
-    component: CrudPrestamosComponent
+    component: CrudPrestamosComponent,
+    canActivate: [VigilanteAdministradoresSupervisoresGuard]
   },
 ];
 

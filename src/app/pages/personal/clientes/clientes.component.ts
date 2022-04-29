@@ -32,13 +32,7 @@ export class ClientesComponent implements OnInit {
   ngOnInit(): void {
     this.formularioReactivo();//El formulario quiero a fuerzas que se inicie, debido al formulario establecido en la plantilla,
     //si lo dejo en el else, retorna un error en la consola, porque no se ha iniciado el formulario
-    if (this.borroLocalStorage()) {//Si borro el localstorage
-      this.router.navigate(['/acceso']);//entonces que redireccione al login
-    } else {//si no, entonces se queda en la pagina y
-      //que haga lo que tenga que hacer
-      this.iniciarTabla();
-    }
-    //this.redireccionar();
+    this.iniciarTabla();
   }
 
   iniciarTabla() {
@@ -93,16 +87,6 @@ export class ClientesComponent implements OnInit {
       ])
     });
     //console.log(this.formulario);
-  }
-
-  borroLocalStorage(): boolean {
-    //console.log(localStorage.getItem('accedio'));
-    if (localStorage.getItem('token') == null || localStorage.getItem('token') == undefined) {
-      return true;
-      //this.router.navigate(['/acceso']);
-    }else{
-      return false;
-    }
   }
 
   ngOnDestroy(): void {

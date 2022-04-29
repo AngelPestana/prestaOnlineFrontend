@@ -46,13 +46,104 @@
                         <td>{{ prestamo.cliente_debe }}</td>
                         <td>{{ prestamo.created_at }}</td>
                         <td>
-                            <a routerLink="/crud-prestamos/{{prestamo.id}}" class="btn btn-primary text-white">
+                            <a *ngIf="id_rol == '2' || id_rol == '1'" routerLink="/crud-prestamos/{{prestamo.id}}"
+                                class="btn btn-primary text-white">
                                 <i class="bi bi-pencil-square"></i>
                                 Gestión</a>
+                            <a *ngIf="id_rol == '3' || id_rol == '4'"
+                                class="btn btn-primary text-white" (click)="verPrestamo(prestamo.id)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <i class="bi bi-eye-fill"></i>
+                                Ver</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Ver Prestamo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="mb-2" novalidate [formGroup]="formulario">
+                    <div class="position-relative mb-4">
+                        <label for="supervisor" class="form-label fs-base">Supervisor</label>
+                        <input type="text" id="supervisor" class="form-control form-control-lg" formControlName="Supervisor">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="promotor" class="form-label fs-base">Promotor</label>
+                        <input type="text" id="promotor" class="form-control form-control-lg" formControlName="Promotor">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cliente" class="form-label fs-base">Cliente</label>
+                        <input type="text" id="cliente" class="form-control form-control-lg" formControlName="Cliente">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="estado" class="form-label fs-base">Estado</label>
+                        <input type="text" id="estado" class="form-control form-control-lg" formControlName="Estado">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="fecha_inicio_prestamo" class="form-label fs-base">Fecha Inicio del Prestamo</label>
+                        <input type="text" id="fecha_inicio_prestamo" class="form-control form-control-lg" formControlName="fecha_inicio_prestamo">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="fecha_final_prestamo" class="form-label fs-base">Fecha Final del Prestamo</label>
+                        <input type="text" id="fecha_final_prestamo" class="form-control form-control-lg" formControlName="fecha_final_prestamo">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="plazo" class="form-label fs-base">Plazo</label>
+                        <input type="text" id="plazo" class="form-control form-control-lg" formControlName="plazo">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cantidad_abonar_mes" class="form-label fs-base">Cantidad Abonada por Mes</label>
+                        <input type="text" id="cantidad_abonar_mes" class="form-control form-control-lg" formControlName="cantidad_abonar_mes">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="monto_prestado" class="form-label fs-base">Monto Prestado</label>
+                        <input type="text" id="monto_prestado" class="form-control form-control-lg" formControlName="monto_prestado">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="porcentaje_interes" class="form-label fs-base">Porcentaje de Intereses</label>
+                        <input type="text" id="porcentaje_interes" class="form-control form-control-lg" formControlName="porcentaje_interes">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="deuda_interes" class="form-label fs-base">Deuda Total más Intereses</label>
+                        <input type="text" id="deuda_interes" class="form-control form-control-lg" formControlName="deuda_interes">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cliente_debe" class="form-label fs-base">El Cliente Debe</label>
+                        <input type="text" id="cliente_debe" class="form-control form-control-lg" formControlName="cliente_debe">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="created_at" class="form-label fs-base">Fecha de Creación</label>
+                        <input type="text" id="created_at" class="form-control form-control-lg" formControlName="created_at">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+            </div>
         </div>
     </div>
 </div>

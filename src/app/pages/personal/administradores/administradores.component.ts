@@ -31,13 +31,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.formularioReactivo();//El formulario quiero a fuerzas que se inicie, debido al formulario establecido en la plantilla,
     //si lo dejo en el else, retorna un error en la consola, porque no se ha iniciado el formulario
-    if (this.borroLocalStorage()) {//Si borro el localstorage
-      this.router.navigate(['/acceso']);//entonces que redireccione al login
-    } else {//si no, entonces se queda en la pagina y
-      //que haga lo que tenga que hacer
-      this.iniciarTabla();
-    }
-    //this.redireccionar();
+    this.iniciarTabla();
   }
 
   iniciarTabla() {
@@ -84,16 +78,6 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     //console.log(this.formulario);
   }
 
-  borroLocalStorage(): boolean {
-    //console.log(localStorage.getItem('accedio'));
-    if (localStorage.getItem('token') == null || localStorage.getItem('token') == undefined) {
-      return true;
-      //this.router.navigate(['/acceso']);
-    }else{
-      return false;
-    }
-  }
-
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
@@ -130,6 +114,9 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     }, (error => {
       //console.log(error);
       this.cerrarLoading();
+      let mensajeErrorConEtiquetas = error.error.messages.error;
+      let mensajeError = mensajeErrorConEtiquetas.replace(/<[^>]*>?/g, '');
+      this.mensajeError2(mensajeError);
     }));
   }
 
@@ -240,6 +227,20 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     Swal.fire({
       icon: 'error',
       title: mensajeError
+    })
+  }
+
+  mensajeError2(mensaje: string) {
+    Swal.fire({
+      icon: 'error',
+      title: mensaje,
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.router.navigate(['/home']);//Para que me rediriga a la pagina de inicio
+      }
     })
   }
 
