@@ -16,6 +16,7 @@ export class PrestamosComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   prestamosGetSubscription: Subscription;
+  id_rol = '';
 
   constructor(private ps: PrestamoService, private router: Router) { }
 
@@ -24,6 +25,7 @@ export class PrestamosComponent implements OnInit {
       this.router.navigate(['/acceso']);//entonces que redireccione al login
     } else {//si no, entonces se queda en la pagina y
       //que haga lo que tenga que hacer
+      this.id_rol = localStorage.getItem('id_rol');
       this.iniciarTabla();
     }
   }

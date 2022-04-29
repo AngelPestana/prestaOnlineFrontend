@@ -7,7 +7,7 @@
             <p class="card-text">
                 Aquí puede consultar, agregar, editar y eliminar los prestamos.
             </p>
-            <a href="#" class="btn btn-primary" routerLink="/crud-prestamos">Agregar</a>
+            <a *ngIf="id_rol == '2'" class="btn btn-primary" routerLink="/crud-prestamos">Agregar</a>
         </div>
     </div>
 

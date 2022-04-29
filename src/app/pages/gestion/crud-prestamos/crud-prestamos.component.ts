@@ -86,7 +86,7 @@ export class CrudPrestamosComponent implements OnInit {
       //console.log(this.fechaHoy);
       return fechaHoy = `${year}-${month}-${day}`;
     }
-    
+
   }
 
   fechaFinal() {
@@ -249,24 +249,24 @@ export class CrudPrestamosComponent implements OnInit {
     if (localStorage.getItem('token') == null || localStorage.getItem('token') == undefined) {
       return true;
       //this.router.navigate(['/acceso']);
-    }else{
+    } else {
       return false;
     }
   }
 
-  esDelPrestamo (id_cliente: string): string{
+  esDelPrestamo(id_cliente: string): string {
     //console.log(id_cliente);
-    if (this.prestamo['id_cliente'] == id_cliente){
+    if (this.prestamo['id_cliente'] == id_cliente) {
       return "checked";
-    }else{
+    } else {
       return "";
     }
   }
 
-  esDelPrestamo2 (id_promotor: string): string{
-    if (this.prestamo['id_promotor'] == id_promotor){
+  esDelPrestamo2(id_promotor: string): string {
+    if (this.prestamo['id_promotor'] == id_promotor) {
       return "checked";
-    }else{
+    } else {
       return "";
     }
   }
@@ -397,9 +397,9 @@ export class CrudPrestamosComponent implements OnInit {
     prestamo.porcentaje_interes = this.formulario.value.intereses;
     prestamo.deuda_interes = this.atributoDeudaInteres;
     prestamo.id_estado = this.formulario.value.id_estado
-    console.log(prestamo);
+    //console.log(prestamo);
     //console.log(this.prestamo['id']);
-    /*
+
     this.prestamoPostSubscription = this.ps2.postPrestamo(prestamo).subscribe((res: any) => {
       this.cerrarLoading();
       let mensaje = 'Se agregó el prestamo con exito!!';
@@ -409,7 +409,23 @@ export class CrudPrestamosComponent implements OnInit {
       let mensajeErrorConEtiquetas = error.error.messages.error;
       let mensajeError = mensajeErrorConEtiquetas.replace(/<[^>]*>?/g, '');
       this.mensajeError(mensajeError);
-    });*/
+    });
+  }
+
+  eliminarPrestamo() {
+    this.espere();
+    //console.log('con que quieres eliminar verdad prro!!');
+    this.prestamoDeteleSubscription = this.ps2.deletePrestamo(this.prestamo['id']).subscribe((res: any) => {
+      this.cerrarLoading();
+      let mensaje = 'Se eliminó el prestamo con exito!!';
+      this.mensajeExito(mensaje);
+    }, (error: any) => {
+      this.cerrarLoading();
+      //console.log(error);
+      let mensajeError = error.error.messages.error;//no es necesario eliminar etiquetas ya que el metodo delete del api
+      //no devuelve mensajes con etiquetas
+      this.mensajeError(mensajeError);
+    });
   }
 
   mensajeExito(mensaje: string) {
@@ -461,9 +477,12 @@ export class CrudPrestamosComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
-    this.clientesGetSubscription.unsubscribe();
-    this.promotoresGetSubscription.unsubscribe();
-    this.prestamoGetSubscription.unsubscribe();
+
+    if (this.id != null) {
+      this.clientesGetSubscription.unsubscribe();
+      this.promotoresGetSubscription.unsubscribe();
+      this.prestamoGetSubscription.unsubscribe();
+    }
 
     if (this.prestamoPostSubscription != null || this.prestamoPostSubscription != undefined) {
       this.prestamoPostSubscription.unsubscribe();
