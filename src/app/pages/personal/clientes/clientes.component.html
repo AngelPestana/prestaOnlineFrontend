@@ -7,8 +7,8 @@
             <p class="card-text">
                 Aquí puede consultar, agregar, editar y eliminar a los clientes.
             </p>
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop" (click)="entroEnAgregar()">Agregar</a>
+            <a *ngIf="id_rol == '1' || id_rol == '2'" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                (click)="entroEnAgregar()">Agregar</a>
         </div>
     </div>
 </div>
@@ -42,10 +42,15 @@
                     <td>{{ cliente.ocupacion }}</td>
                     <td>{{ cliente.created_at }}</td>
                     <td>
-                        <a href="" class="btn btn-primary text-white" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" (click)="entroEnGestion(cliente.id)">
+                        <a *ngIf="id_rol == '2' || id_rol == '1'" class="btn btn-primary text-white"
+                            data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                            (click)="entroEnGestion(cliente.id)">
                             <i class="bi bi-pencil-square"></i>
                             Gestión</a>
+                        <a *ngIf="id_rol == '3'" class="btn btn-primary text-white" (click)="entroEnVer(cliente.id)"
+                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <i class="bi bi-eye-fill"></i>
+                            Ver</a>
                     </td>
                 </tr>
             </tbody>
@@ -60,7 +65,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == true">Gestión Cliente</h5>
-                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == false">Agregar Cliente</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == false && estaEnVer == false">Agregar Cliente</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnVer == true">Ver Cliente</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -78,7 +84,8 @@
 
                     <div class="mb-4">
                         <label for="apellidos" class="form-label fs-base">Apellidos</label>
-                        <input type="text" id="apellidos" class="form-control form-control-lg" formControlName="apellidos">
+                        <input type="text" id="apellidos" class="form-control form-control-lg"
+                            formControlName="apellidos">
                         <div
                             *ngIf="formularioControl.apellidos.errors && (formularioControl.apellidos.dirty || formularioControl.apellidos.touched)">
                             <p class="form-text text-danger"
@@ -96,15 +103,15 @@
                         </select>
                         <div
                             *ngIf="formularioControl.genero.errors && (formularioControl.genero.dirty || formularioControl.genero.touched)">
-                            <p class="form-text text-danger"
-                                *ngIf="formularioControl.genero.errors.required">
+                            <p class="form-text text-danger" *ngIf="formularioControl.genero.errors.required">
                                 El genero es requerido</p>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="telefono" class="form-label fs-base">Telefono</label>
-                        <input type="text" id="telefono" class="form-control form-control-lg" formControlName="telefono">
+                        <input type="text" id="telefono" class="form-control form-control-lg"
+                            formControlName="telefono">
                         <div
                             *ngIf="formularioControl.telefono.errors && (formularioControl.telefono.dirty || formularioControl.telefono.touched)">
                             <p class="form-text text-danger"
@@ -115,23 +122,27 @@
 
                     <div class="mb-4">
                         <label for="direccion" class="form-label fs-base">Dirección</label>
-                        <input type="text" id="direccion" class="form-control form-control-lg" formControlName="direccion">
+                        <input type="text" id="direccion" class="form-control form-control-lg"
+                            formControlName="direccion">
                         <div
                             *ngIf="formularioControl.direccion.errors && (formularioControl.direccion.dirty || formularioControl.direccion.touched)">
                             <p class="form-text text-danger"
                                 *ngIf="formularioControl.direccion.errors.required || formularioControl.direccion.errors.minlength">
-                                La direccion es requerida, no debe tener menos de 15 caracteres y debe contener solo texto</p>
+                                La direccion es requerida, no debe tener menos de 15 caracteres y debe contener solo
+                                texto</p>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="ocupacion" class="form-label fs-base">Ocupación</label>
-                        <input type="text" id="ocupacion" class="form-control form-control-lg" formControlName="ocupacion">
+                        <input type="text" id="ocupacion" class="form-control form-control-lg"
+                            formControlName="ocupacion">
                         <div
                             *ngIf="formularioControl.ocupacion.errors && (formularioControl.ocupacion.dirty || formularioControl.ocupacion.touched)">
                             <p class="form-text text-danger"
                                 *ngIf="formularioControl.ocupacion.errors.required || formularioControl.ocupacion.errors.minlength">
-                                La ocupación es requerida, no debe tener menos de 15 caracteres y debe contener solo texto</p>
+                                La ocupación es requerida, no debe tener menos de 15 caracteres y debe contener solo
+                                texto</p>
                         </div>
                     </div>
 
@@ -144,13 +155,14 @@
                                 *ngIf="formularioControl.email.errors.required || formularioControl.email.errors.minlength; else elseBlock">
                                 El email es requerido y no debe tener menos de 11 caracteres</p>
                             <ng-template #elseBlock>
-                                <p class="form-text text-danger" *ngIf="formularioControl.email.errors.pattern">La dirección
+                                <p class="form-text text-danger" *ngIf="formularioControl.email.errors.pattern">La
+                                    dirección
                                     debe ser valida y requiere del "@"</p>
                             </ng-template>
                         </div>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-4" *ngIf="estaEnVer == false">
                         <label for="password" class="form-label fs-base">Contraseña</label>
                         <div class="password-toggle">
                             <input type="password" id="password" class="form-control form-control-lg"
@@ -163,13 +175,16 @@
                             </div>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
-                        (click)="agregarAdmin()" *ngIf="estaEnGestion == false" data-bs-dismiss="modal">Agregar</button>
-                    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
-                        (click)="editarAdmin()" *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Editar</button>
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3"
-                        (click)="eliminarAdmin()" *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Eliminar</button>
+                    <div *ngIf="estaEnVer == false">
+                        <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                            (click)="agregarAdmin()" *ngIf="estaEnGestion == false"
+                            data-bs-dismiss="modal">Agregar</button>
+                        <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                            (click)="editarAdmin()" *ngIf="estaEnGestion == true"
+                            data-bs-dismiss="modal">Editar</button>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" (click)="eliminarAdmin()"
+                            *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Eliminar</button>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

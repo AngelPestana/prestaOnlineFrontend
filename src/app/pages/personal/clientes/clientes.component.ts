@@ -20,11 +20,13 @@ export class ClientesComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   estaEnGestion: boolean = false;
+  estaEnVer: boolean = false;
   clientesGetSubscription: Subscription;
   clienteGetSubscription: Subscription;
   clientePostSubscription: Subscription;
   clientePutSubscription: Subscription;
   clienteDeteleSubscription: Subscription;
+  id_rol = '';
   //Nota importante, mandamos los datos por objeto, mientras la lectura de informacion sera manipulado por arreglos
 
   constructor(private cs: ClienteService, private router: Router) { }
@@ -32,6 +34,7 @@ export class ClientesComponent implements OnInit {
   ngOnInit(): void {
     this.formularioReactivo();//El formulario quiero a fuerzas que se inicie, debido al formulario establecido en la plantilla,
     //si lo dejo en el else, retorna un error en la consola, porque no se ha iniciado el formulario
+    this.id_rol = localStorage.getItem('id_rol');
     this.iniciarTabla();
   }
 
@@ -244,6 +247,20 @@ export class ClientesComponent implements OnInit {
 
   entroEnGestion(id_cliente: string) {
     this.estaEnGestion = true;
+    this.estaEnVer = false;
+    this.formulario.reset();//vaciamos el formulario
+    this.espere();
+    this.clienteGetSubscription = this.cs.getCliente(id_cliente).subscribe((res: any) => {
+      //dentro del subscribe estaran los datos consultados de la api, fuera de este no tendras nada
+      this.cliente = res;
+      //console.log(this.cliente);
+      this.presentandoDatos();
+    });
+  }
+
+  entroEnVer(id_cliente: string) {
+    this.estaEnVer = true;
+    this.estaEnGestion = false;
     this.formulario.reset();//vaciamos el formulario
     this.espere();
     this.clienteGetSubscription = this.cs.getCliente(id_cliente).subscribe((res: any) => {
@@ -268,6 +285,7 @@ export class ClientesComponent implements OnInit {
   }
 
   entroEnAgregar() {
+    this.estaEnVer = false;
     this.estaEnGestion = false;
     this.formulario.reset();//vaciamos el formulario
   }
