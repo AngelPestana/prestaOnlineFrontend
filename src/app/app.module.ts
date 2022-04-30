@@ -17,6 +17,8 @@ import { PromotoresComponent } from './pages/personal/promotores/promotores.comp
 import { ClientesComponent } from './pages/personal/clientes/clientes.component';
 import { PrestamosComponent } from './pages/gestion/prestamos/prestamos.component';
 import { CrudPrestamosComponent } from './pages/gestion/crud-prestamos/crud-prestamos.component';
+import { AbonosComponent } from './pages/gestion/abonos/abonos.component';
+import { CrudAbonosComponent } from './pages/gestion/crud-abonos/crud-abonos.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { CrudPrestamosComponent } from './pages/gestion/crud-prestamos/crud-pres
     PromotoresComponent,
     ClientesComponent,
     PrestamosComponent,
-    CrudPrestamosComponent
+    CrudPrestamosComponent,
+    AbonosComponent,
+    CrudAbonosComponent
   ],
   imports: [
     BrowserModule,

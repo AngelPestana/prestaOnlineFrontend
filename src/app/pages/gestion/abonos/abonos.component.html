@@ -1,0 +1,136 @@
+<app-header></app-header>
+
+<div class="container mt-3 mb-3">
+    <div class="card sin-borde">
+        <div class="card-body">
+            <h5 class="card-title">Control Abonos</h5>
+            <p class="card-text">
+                Aquí puede consultar, agregar, editar y eliminar los abonos.
+            </p>
+            <a *ngIf="id_rol == '3'" class="btn btn-primary" routerLink="/crud-abonos">Agregar</a>
+        </div>
+    </div>
+
+    <div class="container mt-3 mb-3">
+        <div class="rounded table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Id Prestamo</th>
+                        <th>Supervisor</th>
+                        <th>Promotor</th>
+                        <th>Cliente</th>
+                        <th>Fecha del abono</th>
+                        <th>Cantidad abonar al mes</th>
+                        <th>Total Pagado</th>
+                        <th>Cambio</th>
+                        <th>El cliente debía</th>
+                        <th>El cliente debe</th>
+                        <th>Fecha de creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let abono of abonos">
+                        <td>{{ abono.id }}</td>
+                        <td>{{ abono.id_prestamo }}</td>
+                        <td>{{ abono.Supervisor }}</td>
+                        <td>{{ abono.Promotor }}</td>
+                        <td>{{ abono.Cliente }}</td>
+                        <td>{{ abono.fecha_abono }}</td>
+                        <td>{{ abono.cantidad_abonar }}</td>
+                        <td>{{ abono.total_pagado }}</td>
+                        <td>{{ abono.cambio }}</td>
+                        <td>{{ abono.debia }}</td>
+                        <td>{{ abono.ahora_debe }}</td>
+                        <td>{{ abono.created_at }}</td>
+                        <td>
+                            <a *ngIf="id_rol == '3' || id_rol == '1'" routerLink="/crud-abonos/{{abono.id}}"
+                                class="btn btn-primary text-white">
+                                <i class="bi bi-pencil-square"></i>
+                                Gestión</a>
+                            <a *ngIf="id_rol == '2' || id_rol == '4'"
+                                class="btn btn-primary text-white" (click)="verAbono(abono.id)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <i class="bi bi-eye-fill"></i>
+                                Ver</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Ver Abono</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="mb-2" novalidate [formGroup]="formulario">
+                    <div class="position-relative mb-4">
+                        <label for="supervisor" class="form-label fs-base">Supervisor</label>
+                        <input type="text" id="supervisor" class="form-control form-control-lg" formControlName="Supervisor">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="promotor" class="form-label fs-base">Promotor</label>
+                        <input type="text" id="promotor" class="form-control form-control-lg" formControlName="Promotor">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cliente" class="form-label fs-base">Cliente</label>
+                        <input type="text" id="cliente" class="form-control form-control-lg" formControlName="Cliente">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="fecha_abono" class="form-label fs-base">Fecha de Abono</label>
+                        <input type="text" id="fecha_abono" class="form-control form-control-lg" formControlName="fecha_abono">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cantidad_abonar" class="form-label fs-base">Cantidad Abonada</label>
+                        <input type="text" id="cantidad_abonar" class="form-control form-control-lg" formControlName="cantidad_abonar">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="total_pagado" class="form-label fs-base">Total Pagado</label>
+                        <input type="text" id="total_pagado" class="form-control form-control-lg" formControlName="total_pagado">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cambio" class="form-label fs-base">Cambio</label>
+                        <input type="text" id="cambio" class="form-control form-control-lg" formControlName="cambio">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="debia" class="form-label fs-base">Antes Debía</label>
+                        <input type="text" id="debia" class="form-control form-control-lg" formControlName="debia">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ahora_debe" class="form-label fs-base">Ahora Debe</label>
+                        <input type="text" id="ahora_debe" class="form-control form-control-lg" formControlName="ahora_debe">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="created_at" class="form-label fs-base">Fecha de Creación</label>
+                        <input type="text" id="created_at" class="form-control form-control-lg" formControlName="created_at">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

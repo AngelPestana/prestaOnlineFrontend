@@ -26,14 +26,14 @@
                         aria-expanded="false">Gestión</a>
                     <ul class="dropdown-menu animate__animated animate__bounceIn" aria-labelledby="dropdown03">
                         <li><a class="dropdown-item" routerLink="/prestamos">Prestamos</a></li>
-                        <li><a class="dropdown-item" href="#">Abonos</a></li>
+                        <li><a class="dropdown-item" routerLink="/abonos">Abonos</a></li>
                     </ul>
                 </li>
                 <li class="nav-item" *ngIf="id_rol == '4'">
-                    <a class="nav-link text-white" href="#">Mis Prestamos</a>
+                    <a class="nav-link text-white" routerLink="/prestamos">Mis Prestamos</a>
                 </li>
                 <li class="nav-item" *ngIf="id_rol == '4'">
-                    <a class="nav-link text-white disabled">Mis Abonos</a>
+                    <a class="nav-link text-white" routerLink="/abonos">Mis Abonos</a>
                 </li>
             </ul>
             <ul class="navbar-nav justify-content-end">

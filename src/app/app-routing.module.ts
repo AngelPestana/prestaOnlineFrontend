@@ -13,6 +13,9 @@ import { VigilanteAdministradoresSupervisoresPromotoresGuard } from './vigilante
 import { VigilanteAdministradoresSupervisoresGuard } from './vigilantes/vigilante-administradores-supervisores.guard';
 import { VigilanteAdministradoresGuard } from './vigilantes/vigilante-administradores.guard';
 import { VigilanteSupervisoresGuard } from './vigilantes/vigilante-supervisores.guard';
+import { AbonosComponent } from './pages/gestion/abonos/abonos.component';
+import { VigilantePromotoresGuard } from './vigilantes/vigilante-promotores.guard';
+import { CrudAbonosComponent } from './pages/gestion/crud-abonos/crud-abonos.component';
 
 const routes: Routes = [
   {
@@ -62,6 +65,21 @@ const routes: Routes = [
     component: CrudPrestamosComponent,
     canActivate: [VigilanteAdministradoresSupervisoresGuard]
   },
+  {
+    path: 'abonos',
+    component: AbonosComponent,
+    canActivate: [VigilanteAccedioGuard]
+  },
+  {
+    path: 'crud-abonos',
+    component: CrudAbonosComponent,
+    canActivate: [VigilantePromotoresGuard]
+  },
+  {
+    path: 'crud-abonos/:id',
+    component: CrudAbonosComponent,
+    canActivate: [VigilantePromotoresGuard]
+  }
 ];
 
 @NgModule({

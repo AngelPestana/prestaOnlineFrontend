@@ -67,21 +67,14 @@ export class CrudPrestamosComponent implements OnInit {
     let year = date.getFullYear();
     let fechaHoy = "";
     if (day < 10 && month < 10) {
-      //console.log(fechaHoy);
       return fechaHoy = `${year}-0${month}-0${day}`;
     } else if (day < 10) {
-      //console.log(this.fechaHoy);
       return fechaHoy = `${year}-${month}-0${day}`;
     } else if (month < 10) {
-      //console.log(`${day}-0${month}-${year}`);
-      //console.log(this.fechaHoy);
       return fechaHoy = `${year}-0${month}-${day}`;
     } else {
-      //console.log(`${day}-${month}-${year}`);
-      //console.log(this.fechaHoy);
       return fechaHoy = `${year}-${month}-${day}`;
     }
-
   }
 
   fechaFinal() {
@@ -239,9 +232,6 @@ export class CrudPrestamosComponent implements OnInit {
     this.atributoFechaFinalPrestamo = this.prestamo['fecha_final_prestamo'];
     this.atributoDeudaInteres = parseFloat(this.prestamo['deuda_interes']);
     this.atributoCantidadAbonarMes = parseFloat(this.prestamo['cantidad_abonar_mes']);
-
-    //console.log(this.formulario);
-    //this.formulario.id_cliente.fireUncheck();
   }
 
   esDelPrestamo(id_cliente: string): string {

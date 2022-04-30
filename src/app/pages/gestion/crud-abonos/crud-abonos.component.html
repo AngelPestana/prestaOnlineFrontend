@@ -1,0 +1,150 @@
+<app-header></app-header>
+
+<form novalidate [formGroup]="formulario">
+    <div class="container mt-3 mb-3">
+        <div class="card sin-borde">
+            <div class="card-body">
+                <h5 class="card-title">Agregar/Gestión Abonos</h5>
+                <p class="card-text text-warning" *ngIf="id != ''">
+                    Si quiere editar el abono, tenga en cuenta que solamente se editaran 3 campos (Cantidad que debe Abonar, Total Pagado por el cliente y Cambio).
+                    Si desea editar otros campos, intente con editar el prestamo al cual hace los abonos.
+                </p>
+                <p class="card-text">
+                    Seleccione la fila de la tabla y rellene el formulario!!.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="mt-3 mb-3">
+            <h5 class="text-center">Seleccione el prestamo para realizar el abono</h5>
+            <h6 class="text-center text-danger" *ngIf="idPrestamo == ''">La seleccion del prestamo es requerida</h6>
+            <div class="rounded table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Supervisor</th>
+                            <th>Id Supervisor</th>
+                            <th>Promotor</th>
+                            <th>Id Promotor</th>
+                            <th>Cliente</th>
+                            <th>Id Cliente</th>
+                            <th>Cantidad Abonar al Mes</th>
+                            <th>Cliente Debe</th>
+                            <th>Seleccione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let prestamo of prestamos">
+                            <td>{{ prestamo.id }}</td>
+                            <td>{{ prestamo.Supervisor }}</td>
+                            <td class="text-center">{{ prestamo.id_supervisor }}</td>
+                            <td>{{ prestamo.Promotor }}</td>
+                            <td class="text-center">{{ prestamo.id_promotor }}</td>
+                            <td>{{ prestamo.Cliente }}</td>
+                            <td class="text-center">{{ prestamo.id_cliente }}</td>
+                            <td class="text-center">{{ prestamo.cantidad_abonar_mes }}</td>
+                            <td class="text-center">{{ prestamo.cliente_debe }}</td>
+                            <td>
+                                <input *ngIf="id != ''" class="form-check-input radio-center" type="radio"
+                                    name="id_prestamo" (click)="cambiarValorIdPrestamo(prestamo.id)" [checked]="esDelAbono(prestamo.id)">
+                                <input *ngIf="id == ''" (click)="cambiarValorIdPrestamo(prestamo.id)" class="form-check-input radio-center" type="radio"
+                                    name="id_prestamo">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5 mb-5 col-sm-10">
+        <div class="card w-75 container-fluid ">
+            <div class="text-center mt-3">
+                <h5>Ingrese los datos: </h5>
+                <hr>
+            </div>
+            <div class="card-body">
+                <!--<form class="row g-3 needs-validation" novalidate>-->
+                <div class="row g-3">
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip01" class="form-label">Cliente: </label>
+                        <input type="text" class="form-control" id="validationTooltip01" placeholder="Ubaldo" formControlName="Cliente">
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip02" class="form-label">Supervisor: </label>
+                        <input type="text" class="form-control" id="validationTooltip02" placeholder="Ubaldo" formControlName="Supervisor">
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip03" class="form-label">Fecha del Abono</label>
+                        <input type="date" class="form-control" id="validationTooltip03" name="fechaInicio" [min]="checarFechaHoy()" formControlName="fecha_abono">
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip06" class="form-label">Cantidad que debe Abonar</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip06"
+                                formControlName="cantidad_abonar">
+                        </div>
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip07" class="form-label">Total Pagado por el cliente</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip07"
+                                name="totalPagado" [min]="minimoPagado" [max]="maximoPagado" formControlName="total_pagado">
+                        </div>
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip09" class="form-label">Cambio</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip09" formControlName="cambio">
+                            <button class="input-group-text" (click)="cambio()">
+                                <i class="bi bi-calculator-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip20" class="form-label">El cliente debía</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="validationTooltip20" formControlName="debia">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip21" class="form-label">El cliente ahora debe</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="">$</span>
+                            <input type="number" class="form-control" id="validationTooltip21" formControlName="ahora_debe">
+                            <button class="input-group-text" (click)="clienteAhoraDebe()">
+                                <i class="bi bi-calculator-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 position-relative" *ngIf="id == null">
+                        <button class="btn btn-primary text-white w-100" type="submit" (click)="agregarAbono()" [disabled]="!formulario.valid">
+                            <i class="bi bi-save2-fill"></i>&nbsp;&nbsp;Guardar
+                        </button>
+                    </div>
+                    <div class="col-md-6 position-relative" *ngIf="id != null">
+                        <button class="btn btn-primary text-white w-100" type="submit" (click)="editarAbono()" [disabled]="!formulario.valid">
+                            <i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Editar
+                        </button>
+                    </div>
+                    <div class="col-md-6 position-relative" *ngIf="id != null">
+                        <button class="btn btn-primary text-white w-100" type="submit" (click)="eliminarAbono()">
+                            <i class="bi bi-trash-fill"></i>&nbsp;&nbsp;Borrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<app-footer></app-footer>
