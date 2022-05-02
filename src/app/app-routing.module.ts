@@ -16,6 +16,7 @@ import { VigilanteSupervisoresGuard } from './vigilantes/vigilante-supervisores.
 import { AbonosComponent } from './pages/gestion/abonos/abonos.component';
 import { VigilantePromotoresGuard } from './vigilantes/vigilante-promotores.guard';
 import { CrudAbonosComponent } from './pages/gestion/crud-abonos/crud-abonos.component';
+import { VigilanteAdministradoresPromotoresGuard } from './vigilantes/vigilante-administradores-promotores.guard';
 
 const routes: Routes = [
   {
@@ -78,7 +79,7 @@ const routes: Routes = [
   {
     path: 'crud-abonos/:id',
     component: CrudAbonosComponent,
-    canActivate: [VigilantePromotoresGuard]
+    canActivate: [VigilanteAdministradoresPromotoresGuard]
   }
 ];
 

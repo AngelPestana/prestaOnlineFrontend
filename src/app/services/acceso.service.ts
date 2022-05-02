@@ -8,7 +8,7 @@ import { Login } from '../models/Login';
 })
 export class AccesoService {
 
-  url: string = 'http://localhost:8080/auth/';
+  url: string = 'https://backend-codeigniter.herokuapp.com/public/auth/';
 
   constructor(private http: HttpClient) { }
 

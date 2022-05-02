@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class SupervisorService {
 
-  url: string = 'http://localhost:8080/api/supervisores';
+  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/supervisores';
 
   constructor(private http: HttpClient) { }
 

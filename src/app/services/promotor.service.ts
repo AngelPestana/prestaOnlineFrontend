@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class PromotorService {
 
-  url: string = 'http://localhost:8080/api/promotores';
+  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/promotores';
 
   constructor(private http: HttpClient) { }
 

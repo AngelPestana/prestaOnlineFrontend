@@ -8,7 +8,7 @@ import { Abono } from '../models/Abono';
 })
 export class AbonoService {
 
-  url: string = 'http://localhost:8080/api/abonos';
+  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/abonos';
 
   constructor(private http: HttpClient) { }
 

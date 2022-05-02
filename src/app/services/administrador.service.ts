@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class AdministradorService {
 
-  url: string = 'http://localhost:8080/api/administradores';
+  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/administradores';
 
   constructor(private http: HttpClient) { }
 

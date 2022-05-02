@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class PrestamoService {
 
-  url: string = 'http://localhost:8080/api/prestamos';
+  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/prestamos';
 
   constructor(private http: HttpClient) { }
 
