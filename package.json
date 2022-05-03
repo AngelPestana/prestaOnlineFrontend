@@ -6,7 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postinstall": "ng build --prod"
+  },
+  "engines": {
+    "node": "16.13.2",
+    "npm": "8.1.2"
   },
   "private": true,
   "dependencies": {
@@ -21,8 +26,10 @@
     "angular-datatables": "^13.0.1",
     "datatables.net": "^1.11.3",
     "datatables.net-dt": "^1.11.3",
+    "express": "^4.18.1",
     "jquery": "^3.6.0",
     "ngx-typed-js": "^2.1.1",
+    "path": "^0.12.7",
     "rxjs": "~7.5.0",
     "sweetalert2": "^11.4.9",
     "tslib": "^2.3.0",
