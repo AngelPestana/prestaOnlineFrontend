@@ -91,7 +91,7 @@ export class PrestamosComponent implements OnInit {
   espere() {
     this.mensajeEspere = Swal.fire({
       title: 'Por favor espere...',
-      imageUrl: '../../../assets/img/gif/loading.gif',
+      imageUrl: 'assets/img/gif/loading.gif',
       imageWidth: 100,
       imageHeight: 100,
       imageAlt: 'Custom image',
