@@ -3,13 +3,15 @@ import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { Administrador } from '../models/Administrador';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdministradorService {
 
-  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/administradores';
+  //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/administradores';
+  url: string = environment.apiUrl + '/api/administradores';
 
   constructor(private http: HttpClient) { }
 

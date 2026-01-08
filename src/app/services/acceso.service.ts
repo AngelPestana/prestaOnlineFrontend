@@ -2,13 +2,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Login } from '../models/Login';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccesoService {
 
-  url: string = 'https://backend-codeigniter.herokuapp.com/public/auth/';
+  //url: string = 'https://backend-codeigniter.herokuapp.com/public/auth/';
+  url: string = environment.apiUrl + '/auth/';
 
   constructor(private http: HttpClient) { }
 

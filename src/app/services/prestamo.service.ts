@@ -3,13 +3,15 @@ import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { Prestamo } from '../models/Prestamo';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrestamoService {
 
-  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/prestamos';
+  //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/prestamos';
+  url: string = environment.apiUrl + '/api/prestamos';
 
   constructor(private http: HttpClient) { }
 

@@ -3,13 +3,15 @@ import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { Cliente } from '../models/Cliente';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
 
-  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/clientes';
+  //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/clientes';
+  url: string = environment.apiUrl + '/api/clientes';
 
   constructor(private http: HttpClient) { }
 

@@ -3,13 +3,15 @@ import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { Supervisor } from '../models/Supervisor';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupervisorService {
 
-  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/supervisores';
+  //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/supervisores';
+  url: string = environment.apiUrl + '/api/prestamos';
 
   constructor(private http: HttpClient) { }
 

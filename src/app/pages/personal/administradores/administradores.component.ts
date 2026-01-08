@@ -63,7 +63,6 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
         Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')
       ]),
       password: new FormControl('', [
-        Validators.required,
         Validators.minLength(4)
       ]),
       genero: new FormControl('', [
@@ -149,11 +148,15 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     if (this.administrador['email'] != this.formulario.value.email) {
       administrador.email = this.formulario.value.email;
     }
-    administrador.contraseña = this.formulario.value.password;
+    if (this.formulario.value.password != undefined){
+      administrador.contraseña = this.formulario.value.password;
+      console.log("campo contraseña es: "+ this.formulario.value.password);
+    }
+    //administrador.contraseña = this.formulario.value.password;
     administrador.genero = this.formulario.value.genero;
     administrador.telefono = this.formulario.value.telefono;
     //administrador['id'] = this.administrador['id'];
-    //console.log(administrador);
+    console.log(administrador);
     this.administradorPutSubscription = this.as.putAdministrador(administrador, this.administrador['id']).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
@@ -264,6 +267,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
       genero: this.administrador['genero'],
       telefono: this.administrador['telefono']
     });
+    console.log(this.formulario.value.contraseña);
     this.cerrarLoading();
   }
 

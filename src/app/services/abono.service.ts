@@ -2,13 +2,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Abono } from '../models/Abono';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AbonoService {
 
-  url: string = 'https://backend-codeigniter.herokuapp.com/public/api/abonos';
+  //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/abonos';
+  url: string = environment.apiUrl + '/api/abonos';
 
   constructor(private http: HttpClient) { }
 
