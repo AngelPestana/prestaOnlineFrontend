@@ -238,6 +238,7 @@ export class PromotoresComponent implements OnInit {
 
   entroEnGestion(id_promotor: string) {
     this.estaEnGestion = true;
+    this.actualizarValidacionPassword();//para que establezca el password opcional
     this.formulario.reset();//vaciamos el formulario
     this.espere();
     this.promotorGetSubscription = this.ps.getPromotor(id_promotor).subscribe((res: any) => {
@@ -262,7 +263,30 @@ export class PromotoresComponent implements OnInit {
 
   entroEnAgregar() {
     this.estaEnGestion = false;
+    this.actualizarValidacionPassword();//para que establezca el password obligatorio
     this.formulario.reset();//vaciamos el formulario
+  }
+
+  actualizarValidacionPassword(): void {
+    const passwordControl = this.formulario.get('password');
+
+    if (!passwordControl) return;
+
+    if (this.estaEnGestion) {
+      // EDICIÓN → password opcional
+      passwordControl.clearValidators();
+      passwordControl.setValidators([
+        Validators.minLength(4)
+      ]);
+    } else {
+      // CREACIÓN → password obligatorio
+      passwordControl.setValidators([
+        Validators.required,
+        Validators.minLength(4)
+      ]);
+    }
+
+    passwordControl.updateValueAndValidity();
   }
 
   get formularioControl() {//NO borrar

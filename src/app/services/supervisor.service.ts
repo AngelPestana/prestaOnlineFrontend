@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class SupervisorService {
 
   //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/supervisores';
-  url: string = environment.apiUrl + '/api/prestamos';
+  url: string = environment.apiUrl + '/api/supervisores';
 
   constructor(private http: HttpClient) { }
 

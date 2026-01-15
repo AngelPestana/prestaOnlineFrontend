@@ -65,7 +65,6 @@ export class SupervisoresComponent implements OnInit {
         Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')
       ]),
       password: new FormControl('', [
-        Validators.required,
         Validators.minLength(4)
       ]),
       genero: new FormControl('', [
@@ -153,7 +152,11 @@ export class SupervisoresComponent implements OnInit {
     if (this.supervisor['email'] != this.formulario.value.email) {
       supervisor.email = this.formulario.value.email;
     }
-    supervisor.contraseña = this.formulario.value.password;
+    if (this.formulario.value.password != undefined){
+      supervisor.contraseña = this.formulario.value.password;
+      //console.log("campo contraseña es: "+ this.formulario.value.password);
+    }
+    //supervisor.contraseña = this.formulario.value.password;
     supervisor.genero = this.formulario.value.genero;
     supervisor.telefono = this.formulario.value.telefono;
     supervisor.direccion = this.formulario.value.direccion;
@@ -200,7 +203,7 @@ export class SupervisoresComponent implements OnInit {
     supervisor.genero = this.formulario.value.genero;
     supervisor.telefono = this.formulario.value.telefono;
     supervisor.direccion = this.formulario.value.direccion;
-    supervisor.id_rol = 1;
+    supervisor.id_rol = 2;
     this.supervisorPostSubscription = this.ss.postSupervisor(supervisor).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
@@ -238,6 +241,7 @@ export class SupervisoresComponent implements OnInit {
 
   entroEnGestion(id_supervisor: string) {
     this.estaEnGestion = true;
+    this.actualizarValidacionPassword();//para que establezca el password opcional
     this.formulario.reset();//vaciamos el formulario
     this.espere();
     this.supervisorGetSubscription = this.ss.getSupervisor(id_supervisor).subscribe((res: any) => {
@@ -262,8 +266,32 @@ export class SupervisoresComponent implements OnInit {
 
   entroEnAgregar() {
     this.estaEnGestion = false;
+    this.actualizarValidacionPassword();//para que establezca el password obligatorio
     this.formulario.reset();//vaciamos el formulario
   }
+
+  actualizarValidacionPassword(): void {
+    const passwordControl = this.formulario.get('password');
+
+    if (!passwordControl) return;
+
+    if (this.estaEnGestion) {
+      // EDICIÓN → password opcional
+      passwordControl.clearValidators();
+      passwordControl.setValidators([
+        Validators.minLength(4)
+      ]);
+    } else {
+      // CREACIÓN → password obligatorio
+      passwordControl.setValidators([
+        Validators.required,
+        Validators.minLength(4)
+      ]);
+    }
+
+    passwordControl.updateValueAndValidity();
+  }
+
 
   get formularioControl() {//NO borrar
     return this.formulario.controls;

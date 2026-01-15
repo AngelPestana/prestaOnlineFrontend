@@ -148,9 +148,9 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     if (this.administrador['email'] != this.formulario.value.email) {
       administrador.email = this.formulario.value.email;
     }
-    if (this.formulario.value.password != undefined){
+    if (this.formulario.value.password != undefined && this.formulario.value.password != null){
       administrador.contraseña = this.formulario.value.password;
-      console.log("campo contraseña es: "+ this.formulario.value.password);
+      //console.log("campo contraseña es: "+ this.formulario.value.password);
     }
     //administrador.contraseña = this.formulario.value.password;
     administrador.genero = this.formulario.value.genero;
@@ -198,6 +198,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
     administrador.genero = this.formulario.value.genero;
     administrador.telefono = this.formulario.value.telefono;
     administrador.id_rol = 1;
+    console.log(administrador);
     this.administradorPostSubscription = this.as.postAdministrador(administrador).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
@@ -249,6 +250,7 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
 
   entroEnGestion(id_administrador: string) {
     this.estaEnGestion = true;
+    this.actualizarValidacionPassword();//para que establezca el password opcional
     this.formulario.reset();//vaciamos el formulario
     this.espere();
     this.administradorGetSubscription = this.as.getAdministrador(id_administrador).subscribe((res: any) => {
@@ -273,7 +275,30 @@ export class AdministradoresComponent implements OnInit, OnDestroy {
 
   entroEnAgregar() {
     this.estaEnGestion = false;
+    this.actualizarValidacionPassword();//para que establezca el password obligatorio
     this.formulario.reset();//vaciamos el formulario
+  }
+
+  actualizarValidacionPassword(): void {
+    const passwordControl = this.formulario.get('password');
+
+    if (!passwordControl) return;
+
+    if (this.estaEnGestion) {
+      // EDICIÓN → password opcional
+      passwordControl.clearValidators();
+      passwordControl.setValidators([
+        Validators.minLength(4)
+      ]);
+    } else {
+      // CREACIÓN → password obligatorio
+      passwordControl.setValidators([
+        Validators.required,
+        Validators.minLength(4)
+      ]);
+    }
+
+    passwordControl.updateValueAndValidity();
   }
 
   get formularioControl() {//NO borrar

@@ -248,6 +248,7 @@ export class ClientesComponent implements OnInit {
   entroEnGestion(id_cliente: string) {
     this.estaEnGestion = true;
     this.estaEnVer = false;
+    this.actualizarValidacionPassword();//para que establezca el password opcional
     this.formulario.reset();//vaciamos el formulario
     this.espere();
     this.clienteGetSubscription = this.cs.getCliente(id_cliente).subscribe((res: any) => {
@@ -261,6 +262,7 @@ export class ClientesComponent implements OnInit {
   entroEnVer(id_cliente: string) {
     this.estaEnVer = true;
     this.estaEnGestion = false;
+    this.actualizarValidacionPassword();//verificar si se ocupa este metodo para ver si esta instruccion sirve
     this.formulario.reset();//vaciamos el formulario
     this.espere();
     this.clienteGetSubscription = this.cs.getCliente(id_cliente).subscribe((res: any) => {
@@ -287,7 +289,30 @@ export class ClientesComponent implements OnInit {
   entroEnAgregar() {
     this.estaEnVer = false;
     this.estaEnGestion = false;
+    this.actualizarValidacionPassword();//para que establezca el password obligatorio
     this.formulario.reset();//vaciamos el formulario
+  }
+
+  actualizarValidacionPassword(): void {
+    const passwordControl = this.formulario.get('password');
+
+    if (!passwordControl) return;
+
+    if (this.estaEnGestion) {
+      // EDICIÓN → password opcional
+      passwordControl.clearValidators();
+      passwordControl.setValidators([
+        Validators.minLength(4)
+      ]);
+    } else {
+      // CREACIÓN → password obligatorio
+      passwordControl.setValidators([
+        Validators.required,
+        Validators.minLength(4)
+      ]);
+    }
+
+    passwordControl.updateValueAndValidity();
   }
 
   get formularioControl() {//NO borrar

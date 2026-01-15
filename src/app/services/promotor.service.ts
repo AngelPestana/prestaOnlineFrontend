@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class PromotorService {
 
   //url: string = 'https://backend-codeigniter.herokuapp.com/public/api/promotores';
-  url: string = environment.apiUrl + '/api/prestamos';
+  url: string = environment.apiUrl + '/api/promotores';
 
   constructor(private http: HttpClient) { }
 
