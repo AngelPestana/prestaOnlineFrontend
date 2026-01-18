@@ -95,8 +95,27 @@
                         <input type="text" class="form-control" id="validationTooltip02" placeholder="Ubaldo" formControlName="Promotor">
                     </div>
                     <div class="col-md-6 position-relative">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Fecha inicio del préstamo</mat-label>
+
+                            <input
+                                matInput
+                                [matDatepicker]="picker"
+                                formControlName="fecha_inicio_prestamo"
+                                [min]="fechaMinima"
+                                [matDatepickerFilter]="filtroFecha">
+
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+
+                            <mat-error *ngIf="formulario.get('fecha_inicio_prestamo')?.hasError('required')">
+                                La fecha de inicio es obligatoria
+                            </mat-error>
+                        </mat-form-field>
+                        <!--
                         <label for="validationTooltip03" class="form-label">Fecha inicio del prestamo</label>
                         <input type="date" class="form-control" id="validationTooltip03" name="fechaInicio" [min]="checarFechaHoy()" formControlName="fecha_inicio_prestamo">
+                        -->
                     </div>
                     <div class="col-md-6 position-relative">
                         <label for="validationTooltip04" class="form-label">Fecha final del prestamo</label>
@@ -109,7 +128,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 position-relative">
-                        <label for="validationTooltip05" class="form-label">Plazo en meses</label>
+                        <label for="validationTooltip05" class="form-label">Plazo en días</label>
                         <div class="input-group">
                             <span class="input-group-text" id="">
                                 <i class="bi bi-calendar-date"></i>
@@ -119,7 +138,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 position-relative">
-                        <label for="validationTooltip06" class="form-label">Cantidad abonar al mes</label>
+                        <label for="validationTooltip06" class="form-label">Cantidad abonar cada día</label>
                         <div class="input-group">
                             <span class="input-group-text" id="">$</span>
                             <input type="number" class="form-control" id="validationTooltip06"
@@ -149,6 +168,11 @@
                                 <option value="15">15%</option>
                                 <option value="20">20%</option>
                                 <option value="25">25%</option>
+                                <option value="30">30%</option>
+                                <option value="35">35%</option>
+                                <option value="40">40%</option>
+                                <option value="45">45%</option>
+                                <option value="50">50%</option>
                             </select>
                         </div>
                     </div>

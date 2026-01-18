@@ -209,7 +209,7 @@ export class ClientesComponent implements OnInit {
     cliente.telefono = this.formulario.value.telefono;
     cliente.direccion = this.formulario.value.direccion;
     cliente.ocupacion = this.formulario.value.ocupacion;
-    cliente.id_rol = 1;
+    cliente.id_rol = 4;
     this.clientePostSubscription = this.cs.postCliente(cliente).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();

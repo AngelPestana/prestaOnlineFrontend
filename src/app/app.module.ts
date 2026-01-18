@@ -19,6 +19,16 @@ import { PrestamosComponent } from './pages/gestion/prestamos/prestamos.componen
 import { CrudPrestamosComponent } from './pages/gestion/crud-prestamos/crud-prestamos.component';
 import { AbonosComponent } from './pages/gestion/abonos/abonos.component';
 import { CrudAbonosComponent } from './pages/gestion/crud-abonos/crud-abonos.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { registerLocaleData } from '@angular/common';
+import localeEsMx from '@angular/common/locales/es-MX';
+
+registerLocaleData(localeEsMx);
+
 
 @NgModule({
   declarations: [
@@ -43,9 +53,15 @@ import { CrudAbonosComponent } from './pages/gestion/crud-abonos/crud-abonos.com
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    DataTablesModule
+    DataTablesModule,
+    BrowserAnimationsModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'es-MX' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

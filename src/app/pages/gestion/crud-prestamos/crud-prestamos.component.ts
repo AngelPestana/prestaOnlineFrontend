@@ -42,12 +42,13 @@ export class CrudPrestamosComponent implements OnInit {
   atributoCantidadAbonarMes = 0;
   idPromotor = '';
   idCliente = '';
+  fechaMinima: Date = new Date();
 
   constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private router: Router, private ar: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.ar.snapshot.paramMap.get('id');
-    this.checarFechaHoy();
+    //this.checarFechaHoy();
     this.formularioReactivo();
     //console.log(this.id);
     if (this.id != null) {
@@ -59,9 +60,9 @@ export class CrudPrestamosComponent implements OnInit {
     this.iniciarTabla2();
   }
 
-  checarFechaHoy(): string {
+  /*checarFechaHoy(): Date {
     //Para obtener la fecha de hoy y hacerlo ver directamente desde el min y max del input
-    let date = new Date();
+    /*let date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
@@ -75,10 +76,19 @@ export class CrudPrestamosComponent implements OnInit {
     } else {
       return fechaHoy = `${year}-${month}-${day}`;
     }
-  }
+    return new Date();
+  }*/
+
+  filtroFecha = (date: Date | null): boolean => {
+    if (!date) return false;
+
+    const dia = date.getDay(); // 0 = domingo, 6 = sábado
+    return dia !== 0 && dia !== 6;
+  };
+
 
   fechaFinal() {
-    let fecha_inicio = this.formulario.value.fecha_inicio_prestamo;
+    /*let fecha_inicio = this.formulario.value.fecha_inicio_prestamo;
     let plazo = this.formulario.value.plazo;
     let fecha_final = new Date(fecha_inicio);
     let month = fecha_final.getMonth();
@@ -89,7 +99,37 @@ export class CrudPrestamosComponent implements OnInit {
     this.formulario.patchValue({
       fecha_final_prestamo: fecha_final2
     });
-    this.atributoFechaFinalPrestamo = fecha_final2;
+    this.atributoFechaFinalPrestamo = fecha_final2;*/
+    let fechaInicio: Date = new Date(this.formulario.value.fecha_inicio_prestamo);
+    let plazoDias: number = this.formulario.value.plazo;
+
+    // Empezamos a contar desde el día siguiente
+    let fechaActual = new Date(fechaInicio);
+    fechaActual.setDate(fechaActual.getDate() + 1);
+
+    let diasContados = 0;
+
+    while (diasContados < plazoDias) {
+      const diaSemana = fechaActual.getDay();
+
+      // 0 = Domingo, 6 = Sábado → NO cuentan
+      if (diaSemana !== 0 && diaSemana !== 6) {
+        diasContados++;
+      }
+
+      // Solo avanzamos si aún no terminamos
+      if (diasContados < plazoDias) {
+        fechaActual.setDate(fechaActual.getDate() + 1);
+      }
+    }
+
+    let fechaFinalString = this.convertirFechaAString(fechaActual);
+
+    this.formulario.patchValue({
+      fecha_final_prestamo: fechaFinalString
+    });
+
+    this.atributoFechaFinalPrestamo = fechaFinalString;
   }
 
   convertirFechaAString(fecha: Date): string {

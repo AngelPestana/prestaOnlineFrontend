@@ -200,7 +200,7 @@ export class PromotoresComponent implements OnInit {
     promotor.genero = this.formulario.value.genero;
     promotor.telefono = this.formulario.value.telefono;
     promotor.direccion = this.formulario.value.direccion;
-    promotor.id_rol = 1;
+    promotor.id_rol = 3;
     this.promotorPostSubscription = this.ps.postPromotor(promotor).subscribe((res: any) => {
       //console.log(res);
       this.cerrarLoading();
