@@ -26,6 +26,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { registerLocaleData } from '@angular/common';
 import localeEsMx from '@angular/common/locales/es-MX';
+import { CapitalComponent } from './pages/gestion/capital/capital.component';
 
 registerLocaleData(localeEsMx);
 
@@ -44,7 +45,8 @@ registerLocaleData(localeEsMx);
     PrestamosComponent,
     CrudPrestamosComponent,
     AbonosComponent,
-    CrudAbonosComponent
+    CrudAbonosComponent,
+    CapitalComponent
   ],
   imports: [
     BrowserModule,

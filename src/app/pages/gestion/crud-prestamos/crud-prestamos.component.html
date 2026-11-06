@@ -75,6 +75,36 @@
                 </table>
             </div>
         </div>
+
+        <div class="mt-3 mb-3">
+            <h5 class="text-center">Seleccione la capital quien ofrecera los fondos para el prestamo</h5>
+            <h6 class="text-center text-danger" *ngIf="idCapital == ''">La selección del capital es requerido</h6>
+            <div class="rounded table-responsive">
+                <table datatable [dtOptions]="dtOptions3" [dtTrigger]="dtTrigger3" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Monto Total</th>
+                            <th>Seleccione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let capital of capitales">
+                            <td>{{ capital.id }}</td>
+                            <td>{{ capital.nombre }}</td>
+                            <td>{{ capital.monto_total }}</td>
+                            <td>
+                                <input *ngIf="id != ''" class="form-check-input radio-center" type="radio"
+                                    name="id_capital" (click)="cambiarValorIdCapital(capital.id)" [checked]="esDelPrestamo3(capital.id)">
+                                <input *ngIf="id == ''" (click)="cambiarValorIdCapital(capital.id)" class="form-check-input radio-center" type="radio"
+                                    name="id_capital">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <div class="container mt-5 mb-5 col-sm-10">

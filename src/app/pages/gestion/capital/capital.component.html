@@ -1,0 +1,132 @@
+<app-header></app-header>
+
+<div class="container mt-3 mb-3">
+    <div class="card sin-borde">
+        <div class="card-body">
+            <h5 class="card-title">Control de Capital</h5>
+            <p class="card-text">
+                Aquí puede consultar, agregar, editar y eliminar el capital.
+            </p>
+            <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop" (click)="entroEnAgregar()">Agregar</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-3 mb-3">
+    <div class="rounded table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Monto Total</th>
+                    <th>Fecha de Creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let capital of capitales">
+                    <td>{{ capital.id }}</td>
+                    <td>{{ capital.nombre }}</td>
+                    <td>{{ capital.descripcion }}</td>
+                    <td>{{ capital.monto_total }}</td>
+                    <td>{{ capital.fecha_creacion }}</td>
+                    <td>
+                        <a href="" class="btn btn-primary text-white" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" (click)="entroEnGestion(capital.id)">
+                            <i class="bi bi-pencil-square"></i>
+                            Gestión</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == true">Gestión Administrador</h5>
+                <h5 class="modal-title" id="staticBackdropLabel" *ngIf="estaEnGestion == false">Agregar Administrador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="mb-2" novalidate [formGroup]="formulario">
+                    <div class="position-relative mb-4">
+                        <label for="nombre" class="form-label fs-base">Nombre</label>
+                        <input type="text" id="nombre" class="form-control form-control-lg" formControlName="nombre">
+                        <div
+                            *ngIf="formularioControl.nombre.errors && (formularioControl.nombre.dirty || formularioControl.nombre.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.nombre.errors.required || formularioControl.nombre.errors.minlength">
+                                El nombre es requerido y no debe tener menos de 3 caracteres</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="descripcion" class="form-label fs-base">Descripcion</label>
+                        <input type="text" id="descripcion" class="form-control form-control-lg" formControlName="descripcion">
+                        <div
+                            *ngIf="formularioControl.descripcion.errors && (formularioControl.descripcion.dirty || formularioControl.descripcion.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.descripcion.errors.required || formularioControl.descripcion.errors.minlength">
+                                La descripcion es requerida y no debe tener menos de 3 caracteres</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="montoTotal" class="form-label fs-base">Monto Total</label>
+                        <input type="text" id="montoTotal" class="form-control form-control-lg" formControlName="montoTotal">
+                        <div
+                            *ngIf="formularioControl.montoTotal.errors && (formularioControl.montoTotal.dirty || formularioControl.montoTotal.touched)">
+                            <p class="form-text text-danger"
+                                *ngIf="formularioControl.montoTotal.errors.required">
+                                El monto total es requerido</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Fecha de creación</mat-label>
+
+                            <input
+                                matInput
+                                [matDatepicker]="picker"
+                                formControlName="fechaCreacion">
+
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+
+                            <mat-error *ngIf="formulario.get('fechaCreacion')?.hasError('required')">
+                                La fecha de creación es obligatoria
+                            </mat-error>
+                        </mat-form-field>
+                        <!--
+                        <label for="validationTooltip03" class="form-label">Fecha inicio del prestamo</label>
+                        <input type="date" class="form-control" id="validationTooltip03" name="fechaInicio" [min]="checarFechaHoy()" formControlName="fecha_inicio_prestamo">
+                        -->
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                        (click)="agregarCapital()" *ngIf="estaEnGestion == false" data-bs-dismiss="modal">Agregar</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="!formulario.valid"
+                        (click)="editarCapital()" *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Editar</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3"
+                        (click)="eliminarCapital()" *ngIf="estaEnGestion == true" data-bs-dismiss="modal">Eliminar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

@@ -7,6 +7,8 @@ export class Prestamo {
     Promotor: string | undefined;
     id_cliente: string| undefined;
     Cliente: string| undefined;
+    id_capital: string | undefined;
+    Capital: string | undefined;
     id_estado: string| undefined;
     Estado: string| undefined;
     fecha_inicio_prestamo: string| undefined;

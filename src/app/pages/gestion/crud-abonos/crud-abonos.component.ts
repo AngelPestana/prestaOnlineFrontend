@@ -277,7 +277,7 @@ export class CrudAbonosComponent implements OnInit {
     let cantidad_abonar = this.atributoCantidadAbonar;
     //console.log(total_pagado);
     //console.log(cantidad_abonar);
-    if (total_pagado != NaN && cantidad_abonar != 0) {
+    if (!Number.isNaN(total_pagado) && cantidad_abonar != 0) {
       let cambio = total_pagado - cantidad_abonar;
       this.formulario.patchValue({
         cambio: cambio

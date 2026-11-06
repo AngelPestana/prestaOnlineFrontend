@@ -9,6 +9,8 @@ import { Promotor } from 'src/app/models/Promotor';
 import { PrestamoService } from 'src/app/services/prestamo.service';
 import { Prestamo } from 'src/app/models/Prestamo';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Capital } from 'src/app/models/Capital';
+import { CapitalService } from 'src/app/services/capital.service';
 
 @Component({
   selector: 'app-crud-prestamos',
@@ -19,11 +21,14 @@ export class CrudPrestamosComponent implements OnInit {
   id: string = '';
   dtOptions: DataTables.Settings = {};
   dtOptions2: DataTables.Settings = {};
+  dtOptions3: DataTables.Settings = {};
   prestamo: Prestamo[] = [];
   clientes: Cliente[] = [];
   promotores: Promotor[] = [];
+  capitales: Capital[] = [];
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger2: Subject<any> = new Subject<any>();
+  dtTrigger3: Subject<any> = new Subject<any>();
   mensajeEspere: any;
   prestamoGetSubscription: Subscription;
   prestamoPutSubscription: Subscription;
@@ -31,6 +36,7 @@ export class CrudPrestamosComponent implements OnInit {
   prestamoDeteleSubscription: Subscription;
   clientesGetSubscription: Subscription;
   promotoresGetSubscription: Subscription;
+  capitalesGetSubscription: Subscription;
   formulario: any;
   minimoMes = 6;
   maximoMes = 24;
@@ -42,9 +48,10 @@ export class CrudPrestamosComponent implements OnInit {
   atributoCantidadAbonarMes = 0;
   idPromotor = '';
   idCliente = '';
+  idCapital = '';
   fechaMinima: Date = new Date();
 
-  constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private router: Router, private ar: ActivatedRoute) { }
+  constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private cap: CapitalService, private router: Router, private ar: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.ar.snapshot.paramMap.get('id');
@@ -58,6 +65,7 @@ export class CrudPrestamosComponent implements OnInit {
     this.espere();
     this.iniciarTabla();
     this.iniciarTabla2();
+    this.iniciarTabla3();
   }
 
   /*checarFechaHoy(): Date {
@@ -131,6 +139,14 @@ export class CrudPrestamosComponent implements OnInit {
 
     this.atributoFechaFinalPrestamo = fechaFinalString;
   }
+
+  formatearFecha(date: Date): string {
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
 
   convertirFechaAString(fecha: Date): string {
     let day = fecha.getDate();
@@ -238,6 +254,11 @@ export class CrudPrestamosComponent implements OnInit {
     //console.log(this.idPromotor);
   }
 
+  cambiarValorIdCapital(idCapital: string) {
+    this.idCapital = idCapital;
+    //console.log(this.idPromotor);
+  }
+
   mostrarValores() {
     this.prestamoGetSubscription = this.ps2.getPrestamo(this.id).subscribe((res: any) => {
       this.prestamo = res;
@@ -257,6 +278,7 @@ export class CrudPrestamosComponent implements OnInit {
     this.formulario.patchValue({
       Cliente: this.prestamo['Cliente'],
       Promotor: this.prestamo['Promotor'],
+      Capital: this.prestamo['Capital'],
       fecha_inicio_prestamo: this.prestamo['fecha_inicio_prestamo'],
       fecha_final_prestamo: this.prestamo['fecha_final_prestamo'],
       plazo: parseInt(this.prestamo['plazo']),
@@ -269,6 +291,7 @@ export class CrudPrestamosComponent implements OnInit {
     //console.log(this.prestamo);
     this.idPromotor = this.prestamo['id_promotor'];
     this.idCliente = this.prestamo['id_cliente'];
+    this.idCapital = this.prestamo['id_capital'];
     this.atributoFechaFinalPrestamo = this.prestamo['fecha_final_prestamo'];
     this.atributoDeudaInteres = parseFloat(this.prestamo['deuda_interes']);
     this.atributoCantidadAbonarMes = parseFloat(this.prestamo['cantidad_abonar_mes']);
@@ -291,6 +314,14 @@ export class CrudPrestamosComponent implements OnInit {
     }
   }
 
+  esDelPrestamo3(id_capital: string): string {
+    if (this.prestamo['id_capital'] == id_capital) {
+      return "checked";
+    } else {
+      return "";
+    }
+  }
+
   someClickHandler(info: any): void {
     let message = info[1] + ' ' + info[2];
     this.formulario.patchValue({
@@ -303,6 +334,14 @@ export class CrudPrestamosComponent implements OnInit {
     let message = info[1] + ' ' + info[2];
     this.formulario.patchValue({
       Promotor: message,
+    });
+    //console.log(message);
+  }
+
+  someClickHandler3(info: any): void {
+    let message = info[1] + ' ' + info[2];
+    this.formulario.patchValue({
+      Capital: message,
     });
     //console.log(message);
   }
@@ -353,6 +392,29 @@ export class CrudPrestamosComponent implements OnInit {
     this.obtenerPromotores();
   }
 
+  iniciarTabla3() {
+    this.dtOptions3 = {
+      pagingType: 'full_numbers',
+      pageLength: 5,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json'
+      },
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        const self = this;
+        // Unbind first in order to avoid any duplicate handler
+        // (see https://github.com/l-lin/angular-datatables/issues/87)
+        // Note: In newer jQuery v3 versions, `unbind` and `bind` are 
+        // deprecated in favor of `off` and `on`
+        $('input', row).off('click');
+        $('input', row).on('click', () => {
+          self.someClickHandler2(data);
+        });
+        return row;
+      }
+    };
+    this.obtenerCapitales();
+  }
+
   obtenerPromotores() {
     this.promotoresGetSubscription = this.ps.getPromotores().subscribe((res: any) => {
       this.promotores = res;
@@ -375,12 +437,25 @@ export class CrudPrestamosComponent implements OnInit {
     }));
   }
 
+  obtenerCapitales() {
+    this.capitalesGetSubscription = this.cap.getCapitales().subscribe((res: any) => {
+      this.capitales = res;
+      //console.log(res);
+      this.dtTrigger3.next(0);
+      this.cerrarLoading();
+    }, (error => {
+      //console.log(error);
+      this.cerrarLoading();
+    }));
+  }
+
   editarPrestamo() {
     this.espere();
     let prestamo = new Prestamo();//Creamos una variable local de tipo administrador, no usamos el this.administrador
     //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.administrador, es la que se mostro antes de modificar
     prestamo.id_promotor = this.idPromotor;
     prestamo.id_cliente = this.idCliente;
+    prestamo.id_capital = this.idCapital;
     prestamo.fecha_final_prestamo = this.atributoFechaFinalPrestamo;
     prestamo.fecha_inicio_prestamo = this.formulario.value.fecha_inicio_prestamo;
     prestamo.plazo = this.formulario.value.plazo;
@@ -409,8 +484,12 @@ export class CrudPrestamosComponent implements OnInit {
     //porque queremos mandar nuevos valores para editar, la informacion que tiene el this.administrador, es la que se mostro antes de modificar
     prestamo.id_promotor = this.idPromotor;
     prestamo.id_cliente = this.idCliente;
+    prestamo.id_capital = this.idCapital;
     prestamo.fecha_final_prestamo = this.atributoFechaFinalPrestamo;
-    prestamo.fecha_inicio_prestamo = this.formulario.value.fecha_inicio_prestamo;
+    prestamo.fecha_inicio_prestamo = this.formatearFecha(
+      this.formulario.value.fecha_inicio_prestamo
+    );
+    //prestamo.fecha_inicio_prestamo = this.formulario.value.fecha_inicio_prestamo;
     prestamo.plazo = this.formulario.value.plazo;
     prestamo.cantidad_abonar_mes = this.atributoCantidadAbonarMes;
     prestamo.monto_prestado = this.formulario.value.monto_prestado;
@@ -502,6 +581,7 @@ export class CrudPrestamosComponent implements OnInit {
       this.clientesGetSubscription.unsubscribe();
       this.promotoresGetSubscription.unsubscribe();
       this.prestamoGetSubscription.unsubscribe();
+      this.capitalesGetSubscription.unsubscribe();
     }
 
     if (this.prestamoPostSubscription != null || this.prestamoPostSubscription != undefined) {
