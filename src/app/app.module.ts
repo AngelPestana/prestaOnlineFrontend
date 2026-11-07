@@ -27,6 +27,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { registerLocaleData } from '@angular/common';
 import localeEsMx from '@angular/common/locales/es-MX';
 import { CapitalComponent } from './pages/gestion/capital/capital.component';
+import { DiasFestivosComponent } from './pages/gestion/dias-festivos/dias-festivos.component';
 
 registerLocaleData(localeEsMx);
 
@@ -46,7 +47,8 @@ registerLocaleData(localeEsMx);
     CrudPrestamosComponent,
     AbonosComponent,
     CrudAbonosComponent,
-    CapitalComponent
+    CapitalComponent,
+    DiasFestivosComponent
   ],
   imports: [
     BrowserModule,

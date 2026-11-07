@@ -18,6 +18,7 @@ import { VigilantePromotoresGuard } from './vigilantes/vigilante-promotores.guar
 import { CrudAbonosComponent } from './pages/gestion/crud-abonos/crud-abonos.component';
 import { VigilanteAdministradoresPromotoresGuard } from './vigilantes/vigilante-administradores-promotores.guard';
 import { CapitalComponent } from './pages/gestion/capital/capital.component';
+import { DiasFestivosComponent } from './pages/gestion/dias-festivos/dias-festivos.component';
 
 const routes: Routes = [
   {
@@ -85,6 +86,10 @@ const routes: Routes = [
   {
     path: 'capital',
     component: CapitalComponent,
+  },
+  {
+    path: 'festivos',
+    component: DiasFestivosComponent,
   }
 ];
 

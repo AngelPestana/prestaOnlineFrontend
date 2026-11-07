@@ -129,6 +129,31 @@ export class CapitalComponent implements OnInit {
       }, 500);
     }
 
+    formatearFecha2(fechaString: String): Date {
+      const fecha = fechaString;
+
+      let fechaConvertida = null;
+
+      if (fecha) {
+        const [fechaParte, horaParte] = fecha.split(' ');
+
+        const [anio, mes, dia] = fechaParte.split('-').map(Number);
+
+        const [hora, minutos, segundos] = horaParte.split(':').map(Number);
+
+        fechaConvertida = new Date(
+            anio,
+            mes - 1,
+            dia,
+            hora,
+            minutos,
+            segundos
+        );
+      }
+
+      return fechaConvertida;
+    }
+
     formatearFecha(date: Date): string {
       const year = date.getFullYear();
       const month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -247,13 +272,36 @@ export class CapitalComponent implements OnInit {
     }
   
     presentandoDatos() {
+
+      /*const fecha = this.capital['fecha_creacion'];
+
+      let fechaConvertida = null;
+
+      if (fecha) {
+        const [fechaParte, horaParte] = fecha.split(' ');
+
+        const [anio, mes, dia] = fechaParte.split('-').map(Number);
+
+        const [hora, minutos, segundos] = horaParte.split(':').map(Number);
+
+        fechaConvertida = new Date(
+            anio,
+            mes - 1,
+            dia,
+            hora,
+            minutos,
+            segundos
+        );
+      }*/
+
       this.formulario.patchValue({
         nombre: this.capital['nombre'],
         descripcion: this.capital['descripcion'],
         montoTotal: this.capital['monto_total'],
-        fechaCreacion: this.capital['fecha_creacion']
+        fechaCreacion: this.formatearFecha2(this.capital['fecha_creacion'])
       });
-      //console.log(this.formulario.value.contraseña);
+
+      //console.log(this.capital['fecha_creacion']);
       this.cerrarLoading();
     }
   
