@@ -125,6 +125,14 @@
                         <input type="text" class="form-control" id="validationTooltip02" placeholder="Ubaldo" formControlName="Promotor">
                     </div>
                     <div class="col-md-6 position-relative">
+                        <label for="validationTooltip01" class="form-label">Nombre Capital: </label>
+                        <input type="text" class="form-control" id="validationTooltip01" placeholder="Ubaldo" formControlName="NombreCapital">
+                    </div>
+                    <div class="col-md-6 position-relative">
+                        <label for="validationTooltip02" class="form-label">Monto Capital: </label>
+                        <input type="number" class="form-control" id="validationTooltip02" placeholder="Ubaldo" formControlName="MontoCapital">
+                    </div>
+                    <div class="col-md-6 position-relative">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>Fecha inicio del préstamo</mat-label>
 
@@ -150,9 +158,6 @@
                     <div class="col-md-6 position-relative">
                         <label for="validationTooltip04" class="form-label">Fecha final del prestamo</label>
                         <div class="input-group">
-                            <button class="input-group-text" (click)="fechaFinal()">
-                                <i class="bi bi-calculator-fill"></i>
-                            </button>
                             <input type="date" class="form-control" id="validationTooltip04"
                                 formControlName="fecha_final_prestamo">
                         </div>
@@ -173,9 +178,6 @@
                             <span class="input-group-text" id="">$</span>
                             <input type="number" class="form-control" id="validationTooltip06"
                                 formControlName="cantidad_abonar_mes">
-                            <button class="input-group-text" (click)="abonosMes()">
-                                <i class="bi bi-calculator-fill"></i>
-                            </button>
                         </div>
                     </div>
                     <div class="col-md-4 position-relative">
@@ -211,9 +213,6 @@
                         <div class="input-group">
                             <span class="input-group-text" id="">$</span>
                             <input type="number" class="form-control" id="validationTooltip09" formControlName="deuda_interes">
-                            <button class="input-group-text" (click)="deudaInteres()">
-                                <i class="bi bi-calculator-fill"></i>
-                            </button>
                         </div>
                     </div>
                     <div class="col-md-4 position-relative">

@@ -66,6 +66,7 @@ export class CrudPrestamosComponent implements OnInit {
     this.iniciarTabla();
     this.iniciarTabla2();
     this.iniciarTabla3();
+    this.realizarCalculos()
   }
 
   /*checarFechaHoy(): Date {
@@ -96,48 +97,51 @@ export class CrudPrestamosComponent implements OnInit {
 
 
   fechaFinal() {
-    /*let fecha_inicio = this.formulario.value.fecha_inicio_prestamo;
-    let plazo = this.formulario.value.plazo;
-    let fecha_final = new Date(fecha_inicio);
-    let month = fecha_final.getMonth();
-    let day = fecha_final.getDate();
-    fecha_final.setMonth(month + plazo);
-    fecha_final.setDate(day + 1);
-    let fecha_final2 = this.convertirFechaAString(fecha_final);
-    this.formulario.patchValue({
-      fecha_final_prestamo: fecha_final2
-    });
-    this.atributoFechaFinalPrestamo = fecha_final2;*/
-    let fechaInicio: Date = new Date(this.formulario.value.fecha_inicio_prestamo);
-    let plazoDias: number = this.formulario.value.plazo;
+    const fechaInicio = this.formulario.get('fecha_inicio_prestamo')?.value;
+    const plazoDias = Number(this.formulario.get('plazo')?.value);
 
-    // Empezamos a contar desde el día siguiente
+    if (!fechaInicio || !plazoDias || plazoDias <= 0 || !Number.isInteger(plazoDias)) {
+        this.atributoFechaFinalPrestamo = '';
+
+        this.formulario.patchValue({
+            fecha_final_prestamo: ''
+        }, { emitEvent: false });
+
+        return;
+    }
+
     let fechaActual = new Date(fechaInicio);
+
+    if (isNaN(fechaActual.getTime())) {
+        return;
+    }
+
+    // Comenzamos a contar desde el día siguiente
     fechaActual.setDate(fechaActual.getDate() + 1);
 
     let diasContados = 0;
 
     while (diasContados < plazoDias) {
-      const diaSemana = fechaActual.getDay();
 
-      // 0 = Domingo, 6 = Sábado → NO cuentan
-      if (diaSemana !== 0 && diaSemana !== 6) {
-        diasContados++;
-      }
+        const diaSemana = fechaActual.getDay();
 
-      // Solo avanzamos si aún no terminamos
-      if (diasContados < plazoDias) {
-        fechaActual.setDate(fechaActual.getDate() + 1);
-      }
+        // Excluir sábados y domingos
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            diasContados++;
+        }
+
+        if (diasContados < plazoDias) {
+            fechaActual.setDate(fechaActual.getDate() + 1);
+        }
     }
 
-    let fechaFinalString = this.convertirFechaAString(fechaActual);
-
-    this.formulario.patchValue({
-      fecha_final_prestamo: fechaFinalString
-    });
+    const fechaFinalString = this.convertirFechaAString(fechaActual);
 
     this.atributoFechaFinalPrestamo = fechaFinalString;
+
+    this.formulario.patchValue({
+        fecha_final_prestamo: fechaFinalString
+    }, { emitEvent: false });
   }
 
   formatearFecha(date: Date): string {
@@ -174,6 +178,18 @@ export class CrudPrestamosComponent implements OnInit {
         Validators.required
       ]),
       Promotor: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ]),
+      NombreCapital: new FormControl({
+        value: '',
+        disabled: true
+      }, [
+        Validators.required
+      ]),
+      MontoCapital: new FormControl({
         value: '',
         disabled: true
       }, [
@@ -219,29 +235,57 @@ export class CrudPrestamosComponent implements OnInit {
   }
 
   deudaInteres() {
-    let intereses = this.formulario.value.intereses;
-    let monto_prestado = this.formulario.value.monto_prestado;
-    let porcentaje = intereses / 100;
-    let calcularInteres = monto_prestado * porcentaje;
-    let deuda_interes = monto_prestado + calcularInteres;
-    this.atributoDeudaInteres = deuda_interes;
+    const intereses = Number(this.formulario.get('intereses')?.value);
+    const montoPrestado = Number(this.formulario.get('monto_prestado')?.value);
+
+    // Evitar cálculos cuando faltan datos
+    if (!montoPrestado || !intereses || montoPrestado <= 0) {
+        this.atributoDeudaInteres = 0;
+        this.atributoCantidadAbonarMes = 0;
+
+        this.formulario.patchValue({
+            deuda_interes: '',
+            cantidad_abonar_mes: ''
+        }, { emitEvent: false });
+
+        return;
+    }
+
+    const porcentaje = intereses / 100;
+    const deudaInteres = montoPrestado + (montoPrestado * porcentaje);
+
+    this.atributoDeudaInteres = deudaInteres;
+
     this.formulario.patchValue({
-      deuda_interes: deuda_interes
-    });
-    this.atributoDeudaInteres = deuda_interes;
+        deuda_interes: deudaInteres
+    }, { emitEvent: false });
+
+    // Actualizar automáticamente el abono diario
+    this.abonosDia();
   }
 
-  abonosMes() {
-    let deuda_interes = this.atributoDeudaInteres;
-    let plazo = this.formulario.value.plazo;
-    //console.log(deuda_interes);
-    //console.log(plazo);
-    let abonoSinRedondeo = deuda_interes / plazo;
-    let abono_mes = Math.round(abonoSinRedondeo);
+  abonosDia() {
+    const deudaInteres = this.atributoDeudaInteres;
+    const plazo = Number(this.formulario.get('plazo')?.value);
+
+    if (!deudaInteres || !plazo || plazo <= 0) {
+        this.atributoCantidadAbonarMes = 0;
+
+        this.formulario.patchValue({
+            cantidad_abonar_mes: ''
+        }, { emitEvent: false });
+
+        return;
+    }
+
+    const abono = deudaInteres / plazo;
+    const abonoRedondeado = Math.round(abono * 100) / 100;
+
+    this.atributoCantidadAbonarMes = abonoRedondeado;
+
     this.formulario.patchValue({
-      cantidad_abonar_mes: abono_mes
-    });
-    this.atributoCantidadAbonarMes = abono_mes;
+        cantidad_abonar_mes: abonoRedondeado
+    }, { emitEvent: false });
   }
 
   cambiarValorIdPromotor(idPromotor: string) {
@@ -339,11 +383,13 @@ export class CrudPrestamosComponent implements OnInit {
   }
 
   someClickHandler3(info: any): void {
-    let message = info[1] + ' ' + info[2];
+    let message = info[1];
+    let message2 = info[2];
     this.formulario.patchValue({
-      Capital: message,
+      NombreCapital: message,
+      MontoCapital: message2,
     });
-    //console.log(message);
+    console.log(message);
   }
 
   iniciarTabla() {
@@ -407,7 +453,7 @@ export class CrudPrestamosComponent implements OnInit {
         // deprecated in favor of `off` and `on`
         $('input', row).off('click');
         $('input', row).on('click', () => {
-          self.someClickHandler2(data);
+          self.someClickHandler3(data);
         });
         return row;
       }
@@ -572,6 +618,26 @@ export class CrudPrestamosComponent implements OnInit {
       //console.log(this.loading);
       this.mensajeEspere.close();
     }, 500);
+  }
+
+  realizarCalculos() {
+
+    this.formulario.get('fecha_inicio_prestamo')?.valueChanges.subscribe(() => {
+        this.fechaFinal();
+    });
+
+    this.formulario.get('plazo')?.valueChanges.subscribe(() => {
+      this.fechaFinal();
+      this.abonosDia();
+    });
+
+    this.formulario.get('monto_prestado')?.valueChanges.subscribe(() => {
+      this.deudaInteres();
+    });
+
+    this.formulario.get('intereses')?.valueChanges.subscribe(() => {
+      this.deudaInteres();
+    });
   }
 
   ngOnDestroy(): void {
