@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { Cliente } from 'src/app/models/Cliente';
@@ -11,6 +11,9 @@ import { Prestamo } from 'src/app/models/Prestamo';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Capital } from 'src/app/models/Capital';
 import { CapitalService } from 'src/app/services/capital.service';
+import { DiaFestivoService } from 'src/app/services/dia-festivo.service';
+import { Festivo } from 'src/app/models/Festivo';
+import { FilaCalendario } from 'src/app/models/FilaCalendario';
 
 @Component({
   selector: 'app-crud-prestamos',
@@ -26,6 +29,8 @@ export class CrudPrestamosComponent implements OnInit {
   clientes: Cliente[] = [];
   promotores: Promotor[] = [];
   capitales: Capital[] = [];
+  festivos: Festivo[] = [];//Todos los Festivos
+  festivo: Festivo[] = [];//Creo que este no lo voy a ocupar
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger2: Subject<any> = new Subject<any>();
   dtTrigger3: Subject<any> = new Subject<any>();
@@ -37,6 +42,12 @@ export class CrudPrestamosComponent implements OnInit {
   clientesGetSubscription: Subscription;
   promotoresGetSubscription: Subscription;
   capitalesGetSubscription: Subscription;
+  festivosGetSubscription: Subscription;
+  festivosMap: { [fecha: string]: string } = {};   // 'YYYY-MM-DD' -> descripción // este tipo de objeto es un map donde cada fecha sera un string y su valor asociado sera tambien unu string
+  errorFestivos = ''; //variable bandera
+  calendario: FilaCalendario[] = [];               // pagos + festivos, para la tarjeta
+  pagos: FilaCalendario[] = [];                    // solo pagos reales
+  mostrarTarjeta = false;
   formulario: any;
   minimoMes = 6;
   maximoMes = 24;
@@ -51,7 +62,7 @@ export class CrudPrestamosComponent implements OnInit {
   idCapital = '';
   fechaMinima: Date = new Date();
 
-  constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private cap: CapitalService, private router: Router, private ar: ActivatedRoute) { }
+  constructor(private cs: ClienteService, private ps: PromotorService, private ps2: PrestamoService, private cap: CapitalService, private router: Router, private ar: ActivatedRoute, private dfs: DiaFestivoService) { }
 
   ngOnInit(): void {
     this.id = this.ar.snapshot.paramMap.get('id');
@@ -66,7 +77,8 @@ export class CrudPrestamosComponent implements OnInit {
     this.iniciarTabla();
     this.iniciarTabla2();
     this.iniciarTabla3();
-    this.realizarCalculos()
+    this.realizarCalculos();
+    this.obtenerFestivos();
   }
 
   /*checarFechaHoy(): Date {
@@ -95,8 +107,22 @@ export class CrudPrestamosComponent implements OnInit {
     return dia !== 0 && dia !== 6;
   };
 
+  mensajeError2(mensaje: string) {
+    Swal.fire({
+      icon: 'error',
+      title: mensaje,
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+      }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.router.navigate(['/home']);//Para que me rediriga a la pagina de inicio
+        }
+      })
+  }
 
-  fechaFinal() {
+
+  /*fechaFinal() {
     const fechaInicio = this.formulario.get('fecha_inicio_prestamo')?.value;
     const plazoDias = Number(this.formulario.get('plazo')?.value);
 
@@ -142,7 +168,125 @@ export class CrudPrestamosComponent implements OnInit {
     this.formulario.patchValue({
         fecha_final_prestamo: fechaFinalString
     }, { emitEvent: false });
+  }*/
+
+  // Convierte Date o 'YYYY-MM-DD' (con o sin hora) a fecha local, sin desfase de zona horaria
+private parsearFecha(valor: any): Date | null {
+  if (!valor) { return null; }
+  if (valor instanceof Date) {
+    return isNaN(valor.getTime()) ? null : new Date(valor.getFullYear(), valor.getMonth(), valor.getDate());
   }
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(valor));
+  if (m) { return new Date(+m[1], +m[2] - 1, +m[3]); }
+  const d = new Date(valor);
+  return isNaN(d.getTime()) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+private crearFila(tipo: 'pago' | 'festivo', fecha: Date, n?: number, descripcion?: string): FilaCalendario {
+  const fila = new FilaCalendario();
+  fila.tipo = tipo;
+  fila.fecha = new Date(fecha);
+  fila.n = n;
+  fila.descripcion = descripcion;
+  return fila;
+}
+
+generarCalendario(): void {
+  const inicio = this.parsearFecha(this.formulario.get('fecha_inicio_prestamo')?.value);
+  const plazo = Number(this.formulario.get('plazo')?.value);
+
+  this.calendario = [];
+  this.pagos = [];
+  if (!inicio || !Number.isInteger(plazo) || plazo <= 0 || plazo > 365) { return; }
+
+  const fecha = new Date(inicio);
+  let numPago = 0;
+
+  while (numPago < plazo) {
+    fecha.setDate(fecha.getDate() + 1);              // el primer pago es al día siguiente
+    const dia = fecha.getDay();
+    if (dia === 0 || dia === 6) { continue; }        // sábado y domingo no aparecen
+
+    const festivo = this.festivosMap[this.formatearFecha(fecha)];
+    if (festivo) {                                    // festivo entre semana: fila roja, sin número
+      this.calendario.push(this.crearFila('festivo', fecha, undefined, festivo));
+      continue;
+    }
+
+    numPago++;
+    const fila = this.crearFila('pago', fecha, numPago);
+    this.calendario.push(fila);
+    this.pagos.push(fila);
+  }
+}
+
+fechaFinal() {
+  this.generarCalendario();
+  const ultimo = this.ultimoPago;
+  const fechaFinalString = (ultimo && ultimo.fecha) ? this.formatearFecha(ultimo.fecha) : '';
+
+  this.atributoFechaFinalPrestamo = fechaFinalString;
+  this.formulario.patchValue({ fecha_final_prestamo: fechaFinalString }, { emitEvent: false });
+}
+
+get fechaInicio(): Date | null {
+  return this.parsearFecha(this.formulario?.get('fecha_inicio_prestamo')?.value);
+}
+
+get primerPago(): FilaCalendario | null {
+  return this.pagos.length ? this.pagos[0] : null;
+}
+
+get ultimoPago(): FilaCalendario | null {
+  return this.pagos.length ? this.pagos[this.pagos.length - 1] : null;
+}
+
+get festivosEnPeriodo(): number {
+  return this.calendario.length - this.pagos.length;
+}
+
+abrirTarjeta(): void { this.mostrarTarjeta = true; }
+cerrarTarjeta(): void { this.mostrarTarjeta = false; }
+
+@HostListener('document:keydown.escape')
+cerrarConEscape(): void { this.mostrarTarjeta = false; }
+
+imprimirTarjeta(): void {
+  const tarjeta = document.getElementById('tarjeta-pagos');
+  if (!tarjeta) { return; }
+
+  const ventana = window.open('', '_blank', 'width=900,height=1000');
+  if (!ventana) {
+    Swal.fire({ icon: 'warning', title: 'Permite las ventanas emergentes para poder imprimir', confirmButtonText: 'Aceptar' });
+    return;
+  }
+
+  // Copiamos los estilos de la página (Bootstrap, etc.) para que se vea igual que en el modal
+  const estilos = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+    .map(el => el.outerHTML)
+    .join('');
+
+  ventana.document.write(`<!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <base href="${document.baseURI}">
+        <title>Tarjeta de pagos</title>
+        ${estilos}
+        <style>
+          * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          @page { size: letter; margin: 10mm; }
+          body { background: #fff !important; padding: 0 !important; }
+          #tarjeta-pagos table td, #tarjeta-pagos table th { padding: 1px 4px; font-size: 11px; }
+          #tarjeta-pagos tr { page-break-inside: avoid; }
+        </style>
+      </head>
+      <body>${tarjeta.outerHTML}</body>
+    </html>`);
+  ventana.document.close();
+  ventana.onafterprint = () => ventana.close();
+  setTimeout(() => { ventana.focus(); ventana.print(); }, 500);
+}
 
   formatearFecha(date: Date): string {
   const year = date.getFullYear();
@@ -495,6 +639,27 @@ export class CrudPrestamosComponent implements OnInit {
     }));
   }
 
+  obtenerFestivos() {
+  this.festivosGetSubscription = this.dfs.getDiasFestivos().subscribe((res: any) => {
+    this.festivos = res;
+    this.festivosMap = {};
+    this.festivos.forEach((f: Festivo) => {
+      const d = this.parsearFecha(f.fecha);
+      if (d) {
+        this.festivosMap[this.formatearFecha(d)] = f.descripcion || 'Día festivo';
+      }
+    });
+    this.errorFestivos = '';
+    this.fechaFinal();   // recalcula por si ya hay fecha y plazo capturados
+  }, (error: any) => {
+    let mensajeError = 'No se pudieron cargar los días festivos.';
+    if (error && error.error && error.error.messages && error.error.messages.error) {
+      mensajeError = String(error.error.messages.error).replace(/<[^>]*>?/g, '');
+    }
+    this.errorFestivos = mensajeError + ' El calendario se calculará sin días festivos.';
+  });
+  }
+
   editarPrestamo() {
     this.espere();
     let prestamo = new Prestamo();//Creamos una variable local de tipo administrador, no usamos el this.administrador
@@ -663,6 +828,10 @@ export class CrudPrestamosComponent implements OnInit {
     if (this.prestamoDeteleSubscription != null || this.prestamoDeteleSubscription != undefined) {
       this.prestamoDeteleSubscription.unsubscribe();
       //console.log('se elimino el delete')
+    }
+
+    if (this.festivosGetSubscription) {
+      this.festivosGetSubscription.unsubscribe();
     }
   }
 

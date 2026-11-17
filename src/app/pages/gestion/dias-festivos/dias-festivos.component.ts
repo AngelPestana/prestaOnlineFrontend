@@ -96,7 +96,7 @@ export class DiasFestivosComponent implements OnInit {
         this.espere();
         this.festivosGetSubscription = this.dfs.getDiasFestivos().subscribe((res: any) => {
           this.festivos = res;
-          //console.log(res);
+          console.log(res);
           this.dtTrigger.next(0);
           this.cerrarLoading();
         }, (error => {
